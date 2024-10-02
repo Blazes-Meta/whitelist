@@ -20,7 +20,7 @@ class Whitelist(commands.Cog):
 	
     def getUUID(username: str) -> str:
 	...
-    def get username(uuid: str) -> str:
+    def getUsername(uuid: str) -> str:
         ...
 
     #-------------------------------------------------#
