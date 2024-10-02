@@ -3,9 +3,9 @@ import discord
 from discord.ext import commands
 
 async def setup(bot):
-    await bot.add_cog(Whitelist(bot))
+    await bot.add_cog(Playerbase(bot))
 
-class Whitelist(commands.Cog):
+class Playerbase(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -13,7 +13,7 @@ class Whitelist(commands.Cog):
     async def on_ready(self):
         log(f"[COGS] {__name__} is ready")
 	    
-	conn = sqlite3.connect('example.db')
+	conn = sqlite3.connect('playerbase.db')
         cursor = conn.cursor()
         cursor.execute('''CREATE TABLE IF NOT EXISTS player (DcID INTEGER, UUID TEXT)''')
         conn.commit()
@@ -38,13 +38,13 @@ class Whitelist(commands.Cog):
     #                  DB-Interface                   #
     #-------------------------------------------------#
 
-    def whitelistAdd(playername: str) -> None:
+    def playerbaseSet(playername: str) -> None:
 	...
 	    
-    def whitelistRemove(playername: str) -> None:
+    def playerbaseRemove(playername: str) -> None:
 	...
 	    
-    def whitelistList() -> dict:
+    def playerbaseList() -> dict:
 	...
 	    
 
@@ -53,8 +53,8 @@ class Whitelist(commands.Cog):
     #-------------------------------------------------#
 
     @commands.command()
-    async def whitelist(self, ctx, arg1=None, arg2=None):
-	if arg1 == "add":
+    async def playerbase(self, ctx, arg1=None, arg2=None):
+	if arg1 == "set":
 	    ...
 		
 	elif arg1 == "remove":
