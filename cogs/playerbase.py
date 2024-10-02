@@ -50,8 +50,6 @@ class Playerbase(commands.Cog):
         #                  DB-Interface                   #
         #-------------------------------------------------#
 
-        class NoEntry(Exception): ...
-
         def playerExists(dcid: int) -> bool:
             conn = sqlite3.connect('playerbase.db')
             cursor = conn.cursor()
@@ -90,8 +88,7 @@ class Playerbase(commands.Cog):
         #-------------------------------------------------#
         #                   Dc-Commands                   #
         #-------------------------------------------------#
-
-
+        
         userid = ctx.author.id
         OPERATORS = OPERATORS.append(userid)
             
