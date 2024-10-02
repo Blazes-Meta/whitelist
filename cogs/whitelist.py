@@ -22,10 +22,14 @@ class Whitelist(commands.Cog):
     #-------------------------------------------------#
     #                   Mojang-API                    #
     #-------------------------------------------------#
-    MOJANG_API = "https://api.mojang.com/users/profiles/minecraft/{playername}"
+    MOJANG_API = "https://api.mojang.com/users/profiles/minecraft"
 	
     def getUUID(playername: str) -> str:
-	...
+	response = requests.get(MOJANG_API+"/"+playername
+	if response.status_code == 200:
+            data = response.json()
+            return data['id']
+        return None
     def getPlayername(uuid: str) -> str:
         ...
 
