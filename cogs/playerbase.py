@@ -23,17 +23,17 @@ class Playerbase(commands.Cog):
     #                   Mojang-API                    #
     #-------------------------------------------------#
     MOJANG_API = "https://api.mojang.com/users/profiles/minecraft"
-    MOJANG_SESSIONSERVER = f"https://sessionserver.mojang.com/session/minecraft/profile/"
+    MOJANG_SESSIONSERVER = f"https://sessionserver.mojang.com/session/minecraft/profile"
 	
     def getUUID(playername: str) -> str:
-	response = requests.get(MOJANG_API+"/"+playername)
+	response = requests.get(f"{MOJANG_API}/{playername}")
 	if response.status_code == 200:
             data = response.json()
             return data['id']
         return None
 	    
     def getPlayername(uuid: str) -> str:
-        response = requests.get(MOJANG_SESSIONSERVER+"/"+uuid)
+        response = requests.get(f"{MOJANG_SESSIONSERVER}/{uuid}")
         if response.status_code == 200:
             profile_data = response.json()
             current_name = profile_data['name']
