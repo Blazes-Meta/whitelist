@@ -15,7 +15,7 @@ class Playerbase(commands.Cog):
 	    
 	conn = sqlite3.connect('playerbase.db')
         cursor = conn.cursor()
-        cursor.execute('''CREATE TABLE IF NOT EXISTS player (DcID INTEGER, UUID TEXT)''')
+        cursor.execute('CREATE TABLE IF NOT EXISTS player (DcID INTEGER PRIMARY KEY, UUID TEXT)')
         conn.commit()
         conn.close()
 
