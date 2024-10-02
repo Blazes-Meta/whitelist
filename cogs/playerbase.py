@@ -32,14 +32,14 @@ class Playerbase(commands.Cog):
 	if response.status_code == 200:
             data = response.json()
             return data['id']
-        raise
+        raise APIError
 	    
     def getPlayername(uuid: str) -> str:
         response = requests.get(f"{MOJANG_SESSIONSERVER}/{uuid}")
         if response.status_code == 200:
             data = response.json()
             return data['name']
-        raise
+        raise APIError
 
     #-------------------------------------------------#
     #                  DB-Interface                   #
@@ -72,7 +72,6 @@ class Playerbase(commands.Cog):
 	    conn.commit()
 	    conn.close()
 	    
-	    
     def playerbaseRemove(dcid: int) -> None:
 	if playerExists(dcid):
 	    conn = sqlite3.connect('playerbase.db')
@@ -81,7 +80,7 @@ class Playerbase(commands.Cog):
 	    conn.commit()
 	    conn.close()
 	else:
-	    raise
+	    raise NoEntry
 	    
     def playerbaseList() -> dict:
 	...
@@ -90,6 +89,8 @@ class Playerbase(commands.Cog):
     #-------------------------------------------------#
     #                   Dc-Commands                   #
     #-------------------------------------------------#
+
+    class PermissionError(Exception): ...
 
     @commands.command()
     async def playerbase(self, ctx, arg1=None, arg2=None):
