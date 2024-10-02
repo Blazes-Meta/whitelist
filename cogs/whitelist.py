@@ -1,6 +1,19 @@
 import sqlite3
 
-# Verbindung zu SQLite herstellen
+class Whitelist(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        log(f"[COGS] {__name__} is ready")
+
+    def getUUID(username: str) -> str:
+		     ...
+    def get username(uuid: str) -> str:
+        ...
+
+
 conn = sqlite3.connect('example.db')
 cursor = conn.cursor()
 
@@ -17,3 +30,6 @@ print(cursor.fetchall())
 
 # Verbindung schließen
 conn.close()
+
+async def setup(bot):
+    await bot.add_cog(Whitelist(bot))
