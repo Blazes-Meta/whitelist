@@ -15,27 +15,27 @@ class Whitelist(commands.Cog):
 	    
 	conn = sqlite3.connect('example.db')
         cursor = conn.cursor()
-        cursor.execute('''CREATE TABLE IF NOT EXISTS member (DcID INTEGER, UUID TEXT)''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS player (DcID INTEGER, UUID TEXT)''')
         conn.commit()
         conn.close()
 
     #-------------------------------------------------#
     #                   Mojang-API                    #
     #-------------------------------------------------#
-    MOJANG_API = ...
+    MOJANG_API = "https://api.mojang.com/users/profiles/minecraft/{playername}"
 	
-    def getUUID(username: str) -> str:
+    def getUUID(playername: str) -> str:
 	...
-    def getUsername(uuid: str) -> str:
+    def getPlayername(uuid: str) -> str:
         ...
 
     #-------------------------------------------------#
     #                  DB-Interface                   #
     #-------------------------------------------------#
 
-    def whitelistAdd(username: str) -> None:
+    def whitelistAdd(playername: str) -> None:
 	...
-    def whitelistRemove(username: str) -> None:
+    def whitelistRemove(playername: str) -> None:
 	...
     def whitelistList() -> dict:
 	...
