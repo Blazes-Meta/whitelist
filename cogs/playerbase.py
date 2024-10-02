@@ -90,12 +90,14 @@ class Playerbase(commands.Cog):
         #-------------------------------------------------#
 
         userid = ctx.author.id
+        await ctx.message.add_reaction("✅")
             
         if arg1 == "set":
             if arg2 == userid or userid in OPERATORS:
                 if arg3 is not None:
                     try:
                         playerbaseSet(dcid=arg2, playername=arg3)
+                        await ctx.message.add_reaction("✅")
                     except Exception:
                         raise commands.BadArgument("playerbase set fehlgeschlagen")
                 else:
@@ -116,8 +118,8 @@ class Playerbase(commands.Cog):
             ...
             
         elif arg1 == None:
-            ...
+            raise commands.MissingRequiredArgument
             
         else:
-            ...
+            raise commands.BadArgument
 		
