@@ -15,7 +15,7 @@ class Playerbase(commands.Cog):
 	    
 	conn = sqlite3.connect('playerbase.db')
         cursor = conn.cursor()
-        cursor.execute('CREATE TABLE IF NOT EXISTS player (DcID INTEGER PRIMARY KEY, UUID TEXT)')
+        cursor.execute('CREATE TABLE IF NOT EXISTS player (DcID INTEGER PRIMARY KEY, UUID TEXT NOT NULL)')
         conn.commit()
         conn.close()
 
@@ -43,20 +43,33 @@ class Playerbase(commands.Cog):
     #                  DB-Interface                   #
     #-------------------------------------------------#
 
-    def playerExists(DcID: int) -> bool:
+    def playerExists(dcid: int) -> bool:
 	conn = sqlite3.connect('playerbase.db')
         cursor = conn.cursor()
-        cursor.execute("SELECT 1 FROM player WHERE DcID = ?", (DcID,))
+        cursor.execute("SELECT 1 FROM player WHERE DcID = ?", (dcid,))
         result = cursor.fetchone()
 	conn.close()
 	if result is None
             return False
 	return True
 
-    def playerbaseSet(DcID: int, playername: str) -> None:
-	
+    def playerbaseSet(dcid: int, playername: str) -> None:
+	uuid = getUUID(playername)
+	if not playerExists(DcID):
+	    conn = sqlite3.connect('playerbase.db')
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO player (DcID, UUID) VALUES (?, ?)", (dcid, uuid))
+	    conn.commit()
+	    conn.close()
+	else:
+	    conn = sqlite3.connect('playerbase.db')
+            cursor = conn.cursor()
+            cursor.execute("UPDATE player SET UUID = ? WHERE DcID = ?", (uuid, dcid))
+	    conn.commit()
+	    conn.close()
 	    
-    def playerbaseRemove(DcID: str) -> None:
+	    
+    def playerbaseRemove(dcid: str) -> None:
 	...
 	    
     def playerbaseList() -> dict:
