@@ -15,7 +15,7 @@ class Playerbase(commands.Cog):
 	    
 	conn = sqlite3.connect('playerbase.db')
         cursor = conn.cursor()
-        cursor.execute('CREATE TABLE IF NOT EXISTS player (DcID INTEGER, UUID TEXT)')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS player (DcID INTEGER, UUID TEXT)''')
         conn.commit()
         conn.close()
 
@@ -23,6 +23,7 @@ class Playerbase(commands.Cog):
     #                   Mojang-API                    #
     #-------------------------------------------------#
     MOJANG_API = "https://api.mojang.com/users/profiles/minecraft"
+    MOJANG_SESSIONSERVER = f"https://sessionserver.mojang.com/session/minecraft/profile/"
 	
     def getUUID(playername: str) -> str:
 	response = requests.get(MOJANG_API+"/"+playername)
@@ -32,7 +33,13 @@ class Playerbase(commands.Cog):
         return None
 	    
     def getPlayername(uuid: str) -> str:
-        ...
+        uuid = uuid.replace("-", "")
+        response = requests.get(MOJANG_SESSIONSERVER+"/"+uuid)
+        if response.status_code == 200:
+            profile_data = response.json()
+            current_name = profile_data['name']
+            return current_name
+        return None
 
     #-------------------------------------------------#
     #                  DB-Interface                   #
@@ -68,3 +75,4 @@ class Playerbase(commands.Cog):
 		
 	else:
 	    ...
+		
