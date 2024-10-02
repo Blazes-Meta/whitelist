@@ -24,24 +24,28 @@ class Playerbase(commands.Cog):
     #-------------------------------------------------#
     MOJANG_API = "https://api.mojang.com/users/profiles/minecraft"
     MOJANG_SESSIONSERVER = f"https://sessionserver.mojang.com/session/minecraft/profile"
+
+    class APIError(Exception): ...
 	
     def getUUID(playername: str) -> str:
 	response = requests.get(f"{MOJANG_API}/{playername}")
 	if response.status_code == 200:
             data = response.json()
             return data['id']
-        return None
+        raise
 	    
     def getPlayername(uuid: str) -> str:
         response = requests.get(f"{MOJANG_SESSIONSERVER}/{uuid}")
         if response.status_code == 200:
             data = response.json()
             return data['name']
-        return None
+        raise
 
     #-------------------------------------------------#
     #                  DB-Interface                   #
     #-------------------------------------------------#
+
+    class NoEntry(Exception): ...
 
     def playerExists(dcid: int) -> bool:
 	conn = sqlite3.connect('playerbase.db')
@@ -69,8 +73,15 @@ class Playerbase(commands.Cog):
 	    conn.close()
 	    
 	    
-    def playerbaseRemove(dcid: str) -> None:
-	...
+    def playerbaseRemove(dcid: int) -> None:
+	if playerExists(dcid):
+	    conn = sqlite3.connect('playerbase.db')
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM player WHERE DcID = ?", (dcid,)
+	    conn.commit()
+	    conn.close()
+	else:
+	    raise
 	    
     def playerbaseList() -> dict:
 	...
