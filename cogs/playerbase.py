@@ -1,3 +1,5 @@
+OPERATORS = [720992368110862407]
+
 import sqlite3
 import discord
 from discord.ext import commands
@@ -94,11 +96,20 @@ class Playerbase(commands.Cog):
 
     @commands.command()
     async def playerbase(self, ctx, arg1=None, arg2=None):
+	userid = ctx.author.id
+	OPERATORS = OPERATORS.append(userid)
+	    
 	if arg1 == "set":
-	    ...
+	    if arg2 in OPERATORS:
+		...
+	    else:
+		raise PermissionError
 		
 	elif arg1 == "remove":
-	    ...
+	    if arg2 in OPERATORS:
+		...
+	    else:
+		raise PermissionError
 		
 	elif arg1 == "list":
 	    ...
