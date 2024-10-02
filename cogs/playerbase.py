@@ -44,8 +44,11 @@ class Playerbase(commands.Cog):
     #                  DB-Interface                   #
     #-------------------------------------------------#
 
-    def playerbaseSet(playername: str) -> None:
+    def playerExists(DcID: int) -> bool:
 	...
+
+    def playerbaseSet(dcid: int, playername: str) -> None:
+	
 	    
     def playerbaseRemove(playername: str) -> None:
 	...
