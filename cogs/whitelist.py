@@ -12,6 +12,12 @@ class Whitelist(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         log(f"[COGS] {__name__} is ready")
+	    
+	conn = sqlite3.connect('example.db')
+        cursor = conn.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS member (DcID INTEGER, UUID TEXT)''')
+        conn.commit()
+        conn.close()
 
     #-------------------------------------------------#
     #                   Mojang-API                    #
@@ -51,20 +57,6 @@ class Whitelist(commands.Cog):
 	else:
 	    ...
 
-conn = sqlite3.connect('example.db')
-cursor = conn.cursor()
+# Verbindung zur SQLite-Datenbank herstellen (erstellt die Datei, falls sie nicht existiert)
 
-# Tabelle erstellen
-cursor.execute('''CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)''')
-
-# Daten einfügen
-cursor.execute("INSERT INTO users (name) VALUES ('Alice')")
-conn.commit()
-
-# Daten abfragen
-cursor.execute("SELECT * FROM users")
-print(cursor.fetchall())
-
-# Verbindung schließen
-conn.close()
 
