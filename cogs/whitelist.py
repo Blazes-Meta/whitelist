@@ -56,7 +56,3 @@ class Whitelist(commands.Cog):
 	    ...
 	else:
 	    ...
-
-# Verbindung zur SQLite-Datenbank herstellen (erstellt die Datei, falls sie nicht existiert)
-
-
