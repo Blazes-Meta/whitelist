@@ -25,7 +25,7 @@ class Playerbase(commands.Cog):
     MOJANG_API = "https://api.mojang.com/users/profiles/minecraft"
 	
     def getUUID(playername: str) -> str:
-	response = requests.get(MOJANG_API+"/"+playername
+	response = requests.get(MOJANG_API+"/"+playername)
 	if response.status_code == 200:
             data = response.json()
             return data['id']
