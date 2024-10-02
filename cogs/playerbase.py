@@ -44,7 +44,16 @@ class Playerbase(commands.Cog):
     #-------------------------------------------------#
 
     def playerExists(DcID: int) -> bool:
-	...
+        cursor.execute("SELECT 1 FROM player WHERE DcID = ?", (DcID,))
+        result = cursor.fetchone()
+        return result is not None
+
+# Beispiel für die Verwendung
+DcID = 12345
+if record_exists(cursor, DcID):
+    print(f"Ein Datensatz mit DcID {DcID} existiert.")
+else:
+    print(f"Kein Datensatz mit DcID {DcID} gefunden.")
 
     def playerbaseSet(dcid: int, playername: str) -> None:
 	
