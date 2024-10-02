@@ -24,7 +24,7 @@ class Playerbase(commands.Cog):
         conn.close()
 
     @commands.command()
-    async def playerbase(self, ctx, arg1=None, arg2=None):
+    async def playerbase(self, ctx, arg1=None, arg2=None, arg3=None):
 
         #-------------------------------------------------#
         #                   Mojang-API                    #
@@ -88,19 +88,27 @@ class Playerbase(commands.Cog):
         #-------------------------------------------------#
         #                   Dc-Commands                   #
         #-------------------------------------------------#
-        
+
         userid = ctx.author.id
-        OPERATORS = OPERATORS.append(userid)
             
         if arg1 == "set":
-            if arg2 in OPERATORS:
-                ...
+            if arg2 == userid or userid in OPERATORS:
+                if arg3 is not None:
+                    try:
+                        playerbaseSet(dcid=arg2, playername=arg3)
+                    except Exception:
+                        raise commands.BadArgument("playerbase set fehlgeschlagen")
+                else:
+                    raise commands.MissingRequiredArgument
             else:
                 raise commands.PermissionError
             
         elif arg1 == "remove":
-            if arg2 in OPERATORS:
-                ...
+            if arg2 == userid or userid in OPERATORS:
+                try:
+                    playerbaseRemove(dcid=arg2)
+                except Exception:
+                    raise commands.BadArgument("playerbase remove fehlgeschlagen")
             else:
                 raise commands.PermissionError
             
