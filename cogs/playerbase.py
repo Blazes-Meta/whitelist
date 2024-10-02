@@ -33,7 +33,6 @@ class Playerbase(commands.Cog):
         return None
 	    
     def getPlayername(uuid: str) -> str:
-        uuid = uuid.replace("-", "")
         response = requests.get(MOJANG_SESSIONSERVER+"/"+uuid)
         if response.status_code == 200:
             profile_data = response.json()
