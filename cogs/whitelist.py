@@ -30,6 +30,7 @@ class Whitelist(commands.Cog):
             data = response.json()
             return data['id']
         return None
+	    
     def getPlayername(uuid: str) -> str:
         ...
 
@@ -39,10 +40,13 @@ class Whitelist(commands.Cog):
 
     def whitelistAdd(playername: str) -> None:
 	...
+	    
     def whitelistRemove(playername: str) -> None:
 	...
+	    
     def whitelistList() -> dict:
 	...
+	    
 
     #-------------------------------------------------#
     #                   Dc-Commands                   #
@@ -52,11 +56,15 @@ class Whitelist(commands.Cog):
     async def whitelist(self, ctx, arg1=None, arg2=None):
 	if arg1 == "add":
 	    ...
+		
 	elif arg1 == "remove":
 	    ...
+		
 	elif arg1 == "list":
 	    ...
+		
 	elif arg1 == None:
 	    ...
+		
 	else:
 	    ...
