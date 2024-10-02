@@ -35,9 +35,8 @@ class Playerbase(commands.Cog):
     def getPlayername(uuid: str) -> str:
         response = requests.get(f"{MOJANG_SESSIONSERVER}/{uuid}")
         if response.status_code == 200:
-            profile_data = response.json()
-            current_name = profile_data['name']
-            return current_name
+            data = response.json()
+            return data['name']
         return None
 
     #-------------------------------------------------#
