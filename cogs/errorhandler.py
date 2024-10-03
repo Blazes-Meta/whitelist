@@ -31,6 +31,12 @@ class Errorhandler(commands.Cog):
                              icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
             await ctx.reply(embed = embed, mention_author=False)
 
+        elif isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(title=f"", color=15774002)
+            embed.set_author(name="Dir fehlen Berechtigungen",
+                             icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
+            await ctx.reply(embed = embed, mention_author=False)
+
     @commands.Cog.listener()
     async def on_ready(self):
         log(f"[COGS] {__name__} is ready")

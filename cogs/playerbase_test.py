@@ -1,4 +1,4 @@
-OPERATORS = [720992368110862407]
+OPERATORS = []#.append(720992368110862407)
 DATABASE = 'playerbase.db'
 
 import sqlite3
@@ -7,9 +7,9 @@ from discord.ext import commands
 from lib.dbinterface import *
 
 async def setup(bot):
-    await bot.add_cog(Playerbase(bot))
+    await bot.add_cog(PlayerbaseTest(bot))
 
-class Playerbase(commands.Cog):
+class PlayerbaseTest(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -27,19 +27,22 @@ class Playerbase(commands.Cog):
     async def playerbase(self, ctx, action=None, dcid=None, playername=None):
 
         userid = ctx.author.id
-        await ctx.message.add_reaction("🆗")
+        #await ctx.message.add_reaction("🆗")
             
         if action == "set":
             #await ctx.message.add_reaction("1️⃣")
+            try:
+                dcid = int(dcid)
+            except:
+                raise commands.BadArgument("Die Discord-ID ist ungültig")
+            
             if dcid == userid or userid in OPERATORS:
                 #await ctx.message.add_reaction("2️⃣")
                 if playername is not None:
                     #await ctx.message.add_reaction("3️⃣")
-                    try:
                         playerbaseSet(dcid=dcid, playername=playername)
                         await ctx.message.add_reaction("✅")
-                    except Exception:
-                        raise commands.BadArgument("playerbase set fehlgeschlagen")
+                        await ctx.reply(f"<@{dcid}> wurde mit {playername} verbunden", mention_author=False)
                     
                 else:
                     raise commands.MissingRequiredArgument(param=commands.Parameter(name='playername', annotation=str, kind=3))
@@ -49,23 +52,31 @@ class Playerbase(commands.Cog):
                 #raise commands.PermissionError
             
         elif action == "remove":
+            try:
+                dcid = int(dcid)
+            except:
+                raise commands.BadArgument("Die Discord-ID ist ungültig")
+            
             if dcid == userid or userid in OPERATORS:
                 try:
                     playerbaseRemove(dcid=dcid)
                     await ctx.message.add_reaction("✅")
-                except Exception:
-                    raise commands.BadArgument("playerbase remove fehlgeschlagen")
+                    await ctx.reply(f"<@{dcid}> ist nichtmehr mit einem Minecraft-Account verbunden", mention_author=False)
+
+                except NoEntryError:
+                    raise commands.BadArgument(f"Es ist kein Spieler auf <@{dcid}> registriert")
+                
             else:
                 await ctx.message.add_reaction("⚠️")
-                #raise commands.PermissionError
+                raise commands.MissingPermissions(message="Dir fehlen Berechtigungen")
             
         elif action == "list":
             ...
             
         elif action == None:
-            await ctx.message.add_reaction("⚠️")
+            #await ctx.message.add_reaction("⚠️")
             raise commands.MissingRequiredArgument(param=commands.Parameter(name='action', annotation=str, kind=3))
             
         else:
-            raise commands.BadArgument
+            raise commands.BadArgument("Das Argument muss eines von `set`, `remove` und `list` sein")
 		
