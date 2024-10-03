@@ -40,9 +40,9 @@ class PlayerbaseTest(commands.Cog):
                 #await ctx.message.add_reaction("2️⃣")
                 if playername is not None:
                     #await ctx.message.add_reaction("3️⃣")
-                        playerbaseSet(dcid=dcid, playername=playername)
-                        await ctx.message.add_reaction("✅")
-                        await ctx.reply(f"<@{dcid}> wurde mit {playername} verbunden", mention_author=False)
+                    playerbaseSet(dcid=dcid, playername=playername)
+                    await ctx.message.add_reaction("✅")
+                    await ctx.reply(f"<@{dcid}> wurde mit {playername} verbunden", mention_author=False)
                     
                 else:
                     raise commands.MissingRequiredArgument(param=commands.Parameter(name='playername', annotation=str, kind=3))
