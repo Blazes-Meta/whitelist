@@ -4,6 +4,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from lib.applib import *
+from lib.mojang import *
 from lib.dbinterface import *
 
 async def setup(bot):
@@ -38,7 +39,7 @@ class PlayerbaseApp(commands.Cog):
             if dcid == authorid or authorid in OPERATORS:
                 if minecraftname is not None:
                     playerbaseSet(dcid=dcid, playername=minecraftname)
-                    await i.response.send_message(f"<@{dcid}> wurde mit {minecraftname} verbunden", mention_author=False)
+                    await i.response.send_message(f"<@{dcid}> wurde mit {minecraftname} ({getUUID(minecraftname)}) verbunden")
                 
                 else:
                     #raise MissingArgument("Bitte gib einen Minecraftnamen an")

@@ -3,7 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 from acemeta import log
 from lib.dbinterface import NoEntryError
-from lib.applib import MissingPermissionsError
+from lib.applib import *
 
 async def setup(bot):
     await bot.add_cog(Errorhandler(bot))
@@ -11,6 +11,33 @@ async def setup(bot):
 class Errorhandler(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        log(f"[COGS] {__name__} is ready")
+
+    @commands.Cog.listener()
+    async def on_app_command_error(self, i: discord.Interaction, error):
+        # if isinstance(error, MissingPermissionsError):
+        #     embed = discord.Embed(title=f"{str(error)}", color=15774002)
+        #     embed.set_author(name="Dir fehlen Berechtigungen",
+        #                      icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
+        #     await i.response.send_message(embed = embed, ephemeral=True)
+
+        # elif isinstance(error, MissingArgument):
+        #     embed = discord.Embed(title=f"{str(error)}", color=15774002)
+        #     embed.set_author(name="Es fehlt ein Argument",
+        #                      icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
+        #     await i.response.send_message(embed = embed, ephemeral=True)
+
+        # elif isinstance(error, app_commands.AppCommandError):
+        #     embed = discord.Embed(title=f"{str(error)}", color=15774002)
+        #     embed.set_author(name="Irgendnen",
+        #                      icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
+        #     await i.response.send_message(embed = embed, ephemeral=True)
+        if True:
+            raise error
+            i.response.send_message(error)
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
@@ -32,17 +59,3 @@ class Errorhandler(commands.Cog):
             embed.set_author(name="Es wurde kein Eintrag in der Playerbase gefunden",
                              icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
             await ctx.reply(embed = embed, mention_author=False)
-    
-    @commands.Cog.listener()
-    async def on_app_command_error(self, i: discord.Interaction, error: app_commands.AppCommandError):
-        if isinstance(error, MissingPermissionsError):
-            embed = discord.Embed(title=f"{str(error)}", color=15774002)
-            embed.set_author(name="Dir fehlen Berechtigungen",
-                             icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
-            await i.response.send_message(embed = embed, mention_author=False, ephemeral=True)
-
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        log(f"[COGS] {__name__} is ready")
-

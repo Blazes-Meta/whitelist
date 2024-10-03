@@ -2,6 +2,7 @@ import os
 import asyncio
 import discord
 from discord.ext import commands, tasks
+from discord.utils import setup_logging
 from dotenv import load_dotenv
 from acemeta import log
 
@@ -17,6 +18,7 @@ async def main():
     load_dotenv() # Läd die Umgebungsvariabeln
     async with bot:
         await loadCogs()
+        setup_logging()
         await bot.start(str(os.getenv("BOT_TOKEN")))
 
 @bot.event
