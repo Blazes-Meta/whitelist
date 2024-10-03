@@ -1,11 +1,12 @@
 import discord
 from discord.ext import commands
 from acemeta import log
+from lib.dbinterface import NoEntryError
 
 async def setup(bot):
-    await bot.add_cog(Bot_Error_Handler(bot))
+    await bot.add_cog(Errorhandler(bot))
 
-class Bot_Error_Handler(commands.Cog):
+class Errorhandler(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -24,7 +25,11 @@ class Bot_Error_Handler(commands.Cog):
                              icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
             await ctx.reply(embed = embed, mention_author=False)
 
-        #elif isinstance(error, 
+        elif isinstance(error, NoEntryError):
+            embed = discord.Embed(title=f"{error}", color=15774002)
+            embed.set_author(name="Es wurde kein Eintrag in der Playerbase gefunden",
+                             icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
+            await ctx.reply(embed = embed, mention_author=False)
 
     @commands.Cog.listener()
     async def on_ready(self):
