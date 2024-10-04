@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from acemeta import log
 
 
 class Bot_Sudo(commands.Cog):
@@ -9,7 +8,7 @@ class Bot_Sudo(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        log(f"[COGS] {__name__} is ready")
+        print(f"[COGS] {__name__} is ready")
         
     #-------------------------------------------------#
     #                  Sudo-Befehle                   #
@@ -17,7 +16,7 @@ class Bot_Sudo(commands.Cog):
 
     @commands.command()
     async def sudo(self, ctx, arg1=None, arg2=None):
-        log(f"[SUDO] {ctx.author.name} ({ctx.author.id}) executed \"{ctx.message.content}\" in {ctx.guild.name} ({ctx.guild.id})")
+        print(f"[SUDO] {ctx.author.name} ({ctx.author.id}) executed \"{ctx.message.content}\" in {ctx.guild.name} ({ctx.guild.id})")
         
         #-------------------------------------------------#
         #                      Sync                       #
@@ -31,7 +30,7 @@ class Bot_Sudo(commands.Cog):
                 embed.set_author(name="Synchronisations-Anfrage versendet", icon_url="https://cdn.discordapp.com/emojis/1233093791657758740.webp")
                 await ctx.reply(embed = embed, mention_author=False, silent=True, delete_after=10)
                 
-                log(f"[SYNC] Global synchronization of all App-Commands requested. Synchronization can take several minutes to hours.")
+                print(f"[SYNC] Global synchronization of all App-Commands requested. Synchronization can take several minutes to hours.")
             
             elif arg2 == None:
                 raise commands.MissingRequiredArgument(param=commands.Parameter(name='arg2', annotation=str, kind=3))

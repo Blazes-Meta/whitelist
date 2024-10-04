@@ -39,13 +39,20 @@ class PlayerbaseApp(commands.Cog):
             if dcid == authorid or authorid in OPERATORS:
                 if minecraftname is not None:
                     self.pb.playerbaseSet(dcid=dcid, playername=minecraftname)
-                    await i.response.send_message(f"<@{dcid}> wurde mit {minecraftname} ({getUUID(minecraftname)}) verbunden")
+                    embed = discord.Embed(title="",
+                                          description=f"<@{dcid}> wurde mit <:mc:1291359572614844480> **{minecraftname}** verbunden\n-# UUID: `{getUUID(minecraftname)}`",
+                                          color=3908961)
+                    embed.set_author(name="Ein Discord-Nutzer wurde mit Minecraft verbunden",
+                                    icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
+                    embed.set_footer(text=f"/playerbase set @{discorduser.name} {minecraftname}",
+                                     icon_url=f"https://mineskin.eu/avatar/{minecraftname}/100.png")
+                    await i.response.send_message(embed = embed)
                 
                 else:
                     raise MissingAppArgument("Bitte gib einen Minecraftnamen an")
 
             else:
-                raise AppPermissionError
+                raise AppPermissionError(f"Du musst ein Operator oder <@{dcid}> sein, um diesen Eintrag ändern zu können")
             
             
         
@@ -59,7 +66,7 @@ class PlayerbaseApp(commands.Cog):
                 await i.response.send_message(f"<@{dcid}> wurde aus der Playerbase entfernt")
 
             else:
-                raise AppPermissionError
+                raise AppPermissionError(f"Du musst ein Operator oder <@{dcid}> sein, um diesen Eintrag löschen zu können")
                 
         
         elif aktion.value == "get":
