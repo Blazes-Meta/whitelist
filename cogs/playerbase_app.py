@@ -62,8 +62,16 @@ class PlayerbaseApp(commands.Cog):
         # ╰────────────────────────────────────────────────────────────╯
 
             if dcid == authorid or authorid in OPERATORS:
+                minecraftname = getPlayername(self.pb.playerbaseGet(dcid))
                 self.pb.playerbaseRemove(dcid=dcid)
-                await i.response.send_message(f"<@{dcid}> wurde aus der Playerbase entfernt")
+                embed = discord.Embed(title="",
+                                      description=f"<@{dcid}>s Verbindung mit <:mc:1291359572614844480> **{minecraftname}** wurde aufgehoben\n-# UUID: `{getUUID(minecraftname)}`",
+                                      color=3908961)
+                embed.set_author(name="Der Eintrag eines Discord-Nutzers wurde entfernt",
+                                 icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
+                embed.set_footer(text=f"/playerbase remove @{discorduser.name}",
+                                 icon_url=f"https://mineskin.eu/avatar/{minecraftname}/100.png")
+                await i.response.send_message(embed = embed)
 
             else:
                 raise AppPermissionError(f"Du musst ein Operator oder <@{dcid}> sein, um diesen Eintrag löschen zu können")
@@ -75,5 +83,9 @@ class PlayerbaseApp(commands.Cog):
         # ╰────────────────────────────────────────────────────────────╯
 
             uuid = self.pb.playerbaseGet(dcid)
-            name = getPlayername(uuid)
-            await i.response.send_message(f"<@{dcid}> ist aktuell mit {name} verbunden")
+            minecraftname = getPlayername(uuid)
+            embed = discord.Embed(title="",
+                                  description=f"<@{dcid}> ist aktuell mit <:mc:1291359572614844480> **{minecraftname}** verbunden\n-# UUID: `{getUUID(minecraftname)}`",
+                                  color=3908961)
+            embed.set_image("https://mineskin.eu/avatar/{minecraftname}/100.png")
+            await i.response.send_message(embed = embed)
