@@ -1,8 +1,8 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-from lib.dbinterface import NoEntryError
-from lib.apps import *
+import lib.dbinterface as dbinterface
+import lib.apps as apps
 
 async def setup(bot):
     await bot.add_cog(Errorhandler(bot))
@@ -31,9 +31,21 @@ class Errorhandler(commands.Cog):
         tree.on_error = self._old_tree_error
 
     async def tree_on_error(self, i: discord.Interaction, error: app_commands.AppCommandError):
-        if isinstance(error, MissingArgument):
+        if isinstance(error, apps.MissingAppArgument):
             embed = discord.Embed(title=f"{str(error)}", color=15774002)
             embed.set_author(name="Es fehlt ein Argument",
+                             icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
+            await i.response.send_message(embed = embed, ephemeral=True)
+
+        elif isinstance(error, apps.AppPermissionError):
+            embed = discord.Embed(title=f"{str(error)}", color=15774002)
+            embed.set_author(name="Dir fehlen nötige Berechtigungen",
+                             icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
+            await i.response.send_message(embed = embed, ephemeral=True)
+
+        elif isinstance(error, apps.NoEntryFound):
+            embed = discord.Embed(title=f"{str(error)}", color=15774002)
+            embed.set_author(name="Ein Eintrag konnte nicht in der Datenbank gefunden werden",
                              icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
             await i.response.send_message(embed = embed, ephemeral=True)
         
@@ -59,7 +71,7 @@ class Errorhandler(commands.Cog):
                              icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
             await ctx.reply(embed = embed, mention_author=False)
 
-        elif isinstance(error, NoEntryError):
+        elif isinstance(error, dbinterface.NoEntryError):
             embed = discord.Embed(title=f"{error}", color=15774002)
             embed.set_author(name="Es wurde kein Eintrag in der Playerbase gefunden",
                              icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
