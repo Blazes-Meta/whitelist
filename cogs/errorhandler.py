@@ -16,28 +16,34 @@ class Errorhandler(commands.Cog):
     async def on_ready(self):
         log(f"[COGS] {__name__} is ready")
 
-    @commands.Cog.listener()
-    async def on_app_command_error(self, i: discord.Interaction, error):
-        # if isinstance(error, MissingPermissionsError):
-        #     embed = discord.Embed(title=f"{str(error)}", color=15774002)
-        #     embed.set_author(name="Dir fehlen Berechtigungen",
-        #                      icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
-        #     await i.response.send_message(embed = embed, ephemeral=True)
+    # ╭────────────────────────────────────────────────────────────╮
+    # │           app_command Error Handeler Workaround            │ 
+    # ╰────────────────────────────────────────────────────────────╯
+    # Jo also dieser Workaround ist vom discord.py Discord. App Commands sind echt be******en.
+    # Aber hey, es funktioniert auch für Kontextmenüs
 
-        # elif isinstance(error, MissingArgument):
-        #     embed = discord.Embed(title=f"{str(error)}", color=15774002)
-        #     embed.set_author(name="Es fehlt ein Argument",
-        #                      icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
-        #     await i.response.send_message(embed = embed, ephemeral=True)
+    def cog_load(self):
+        tree = self.bot.tree
+        self._old_tree_error = tree.on_error
+        tree.on_error = self.tree_on_error # 3rd line <-
 
-        # elif isinstance(error, app_commands.AppCommandError):
-        #     embed = discord.Embed(title=f"{str(error)}", color=15774002)
-        #     embed.set_author(name="Irgendnen",
-        #                      icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
-        #     await i.response.send_message(embed = embed, ephemeral=True)
-        if True:
-            raise error
-            i.response.send_message(error)
+    def cog_unload(self):
+        tree = self.bot.tree
+        tree.on_error = self._old_tree_error
+
+    async def tree_on_error(self, i: discord.Interaction, error: app_commands.AppCommandError):
+        if isinstance(error, MissingArgument):
+            embed = discord.Embed(title=f"{str(error)}", color=15774002)
+            embed.set_author(name="Es fehlt ein Argument",
+                             icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
+            await i.response.send_message(embed = embed, ephemeral=True)
+        
+        else:
+            await i.response.send_message("Es ist ein Fehler aufgetreten")
+
+    # ╭────────────────────────────────────────────────────────────╮
+    # │            discord.ext command error Handeler              │ 
+    # ╰────────────────────────────────────────────────────────────╯
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):

@@ -22,9 +22,9 @@ class PlayerbaseApp(commands.Cog):
     @app_commands.choices(aktion=[
         app_commands.Choice(name="Setzen", value="set"),
         app_commands.Choice(name="Entfernen", value="remove"),
-        app_commands.Choice(name="Auflisten", value="list"),])
+        app_commands.Choice(name="Einsehen", value="get"),])
     
-    async def playerbase(self, i: discord.Interaction, aktion: app_commands.Choice[str], discorduser: discord.User=None, minecraftname: str=None):
+    async def playerbase(self, i: discord.Interaction, aktion: app_commands.Choice[str], discorduser: discord.User, minecraftname: str=None):
 
         #await i.response.send_message(f"User: {discorduser}, Action: {minecraftname}, Choice: {aktion.value}")
 
@@ -35,19 +35,21 @@ class PlayerbaseApp(commands.Cog):
         # ╭────────────────────────────────────────────────────────────╮
         # │                            SET                             │ 
         # ╰────────────────────────────────────────────────────────────╯
-
+            
             if dcid == authorid or authorid in OPERATORS:
                 if minecraftname is not None:
                     playerbaseSet(dcid=dcid, playername=minecraftname)
                     await i.response.send_message(f"<@{dcid}> wurde mit {minecraftname} ({getUUID(minecraftname)}) verbunden")
                 
                 else:
-                    #raise MissingArgument("Bitte gib einen Minecraftnamen an")
+                    raise MissingArgument("Bitte gib einen Minecraftnamen an")
                     raise app_commands.AppCommandError
 
             else:
-                #raise MissingPermissionsError
-                raise app_commands.AppCommandError
+                raise MissingPermissionsError
+                #raise app_commands.AppCommandError
+            
+            
         
         elif aktion.value == "remove": ...
         # ╭────────────────────────────────────────────────────────────╮
@@ -55,7 +57,7 @@ class PlayerbaseApp(commands.Cog):
         # ╰────────────────────────────────────────────────────────────╯
 
         
-        elif aktion.value == "list": ...
+        elif aktion.value == "get": ...
         # ╭────────────────────────────────────────────────────────────╮
         # │                           LIST                             │ 
         # ╰────────────────────────────────────────────────────────────╯
