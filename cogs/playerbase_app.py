@@ -3,7 +3,7 @@ OPERATORS = [].append(720992368110862407)
 import discord
 from discord import app_commands
 from discord.ext import commands
-from lib.applib import *
+from lib.apps import *
 from lib.mojang import *
 from lib.dbinterface import *
 
@@ -25,8 +25,6 @@ class PlayerbaseApp(commands.Cog):
         app_commands.Choice(name="Einsehen", value="get"),])
     
     async def playerbase(self, i: discord.Interaction, aktion: app_commands.Choice[str], discorduser: discord.User, minecraftname: str=None):
-
-        #await i.response.send_message(f"User: {discorduser}, Action: {minecraftname}, Choice: {aktion.value}")
 
         dcid = discorduser.id
         authorid = i.user.id
@@ -51,11 +49,18 @@ class PlayerbaseApp(commands.Cog):
             
             
         
-        elif aktion.value == "remove": ...
+        elif aktion.value == "remove":
         # ╭────────────────────────────────────────────────────────────╮
         # │                          REMOVE                            │ 
         # ╰────────────────────────────────────────────────────────────╯
 
+            if dcid == authorid or authorid in OPERATORS:
+                playerbaseRemove(dcid=dcid)
+                await i.response.send_message(f"<@{dcid}> wurde aus der Playerbase entfernt")
+
+            else:
+                raise MissingPermissionsError
+                
         
         elif aktion.value == "get": ...
         # ╭────────────────────────────────────────────────────────────╮

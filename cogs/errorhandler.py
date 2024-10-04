@@ -1,9 +1,8 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-from acemeta import log
 from lib.dbinterface import NoEntryError
-from lib.applib import *
+from lib.apps import *
 
 async def setup(bot):
     await bot.add_cog(Errorhandler(bot))
@@ -14,7 +13,7 @@ class Errorhandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        log(f"[COGS] {__name__} is ready")
+        print(f"[COGS] {__name__} is ready")
 
     # ╭────────────────────────────────────────────────────────────╮
     # │           app_command Error Handeler Workaround            │ 
