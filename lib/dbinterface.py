@@ -4,18 +4,6 @@ from lib.mojang import *
 class NoEntryError(Exception):
     ...
 
-# class Player:
-#     def __init__(self, dcid, uuid):
-#         self.dcid = dcid
-#         self.uuid = uuid
-
-#     def fromminecraftname(dcid: int, minecraftname: str):
-#         uuid = getUUID(minecraftname)
-#         return Player(dcid=dcid, uuid=uuid)
-    
-#     def minecraftname(self) -> str:
-#         return getPlayername(self.uuid)
-
 class Playerbase:
     def __init__(self, dbpath: str = "playerbase.db"):
         self.dbpath = dbpath

@@ -32,25 +32,25 @@ class Errorhandler(commands.Cog):
 
     async def tree_on_error(self, i: discord.Interaction, error: app_commands.AppCommandError):
         if isinstance(error, apps.MissingAppArgument):
-            embed = discord.Embed(title=f"{str(error)}", color=15774002)
+            embed = discord.Embed(title=f"",
+                                  description=str(error),
+                                  color=15774002)
             embed.set_author(name="Es fehlt ein Argument",
                              icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
             await i.response.send_message(embed = embed, ephemeral=True)
 
         elif isinstance(error, apps.AppPermissionError):
-            embed = discord.Embed(title=f"{str(error)}", color=15774002)
+            embed = discord.Embed(title=f"",
+                                  description=str(error),
+                                  color=15774002)
             embed.set_author(name="Dir fehlen nötige Berechtigungen",
                              icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
             await i.response.send_message(embed = embed, ephemeral=True)
 
-        elif isinstance(error, apps.NoEntryFound):
-            embed = discord.Embed(title=f"{str(error)}", color=15774002)
-            embed.set_author(name="Ein Eintrag konnte nicht in der Datenbank gefunden werden",
-                             icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
-            await i.response.send_message(embed = embed, ephemeral=True)
-
         elif isinstance(error, apps.AppAPIError):
-            embed = discord.Embed(title=f"{str(error)}", color=15774002)
+            embed = discord.Embed(title=f"",
+                                  description=str(error),
+                                  color=15774002)
             embed.set_author(name="Die API hat keine gültige Antwort geliefert",
                              icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
             await i.response.send_message(embed = embed, ephemeral=True)

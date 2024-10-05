@@ -1,12 +1,6 @@
-import sqlite3
+def f(hex_color):
+    if hex_color.startswith("#"):
+        hex_color = hex_color[1:]
+    return int(hex_color, 16)
 
-def playerbaseList() -> dict[int:str]:
-    conn = sqlite3.connect("playerbase.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT DcID, UUID FROM player")
-    rows = cursor.fetchall()
-    result = {row[0]: row[1] for row in rows}
-    conn.close()
-    return result
-
-print(playerbaseList())
+print(f("#e93848"))

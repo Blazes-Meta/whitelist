@@ -28,9 +28,12 @@ class PlayerbaseApp(commands.Cog):
     
     async def playerbase(self, i: discord.Interaction, aktion: app_commands.Choice[str], discorduser: discord.User, minecraftname: str=None):
 
-        dcid = discorduser.id
-        authorid = i.user.id
-        #print(authorid)
+        try:
+            dcid = discorduser.id
+            authorid = i.user.id
+            #print(authorid)
+        except TypeError:
+            raise apps.MissingAppArgument("Bitte gib einen gültigen Minecraft-Namen an")
 
         if aktion.value == "set": 
         # ╭────────────────────────────────────────────────────────────╮
@@ -51,7 +54,7 @@ class PlayerbaseApp(commands.Cog):
                         embed.set_thumbnail(url=f"https://mineskin.eu/helm/{minecraftname}/100.png")
                         await i.response.send_message(embed = embed)
 
-                    except APIError as e:
+                    except MojangAPIError as e:
                         raise apps.AppAPIError(f"{minecraftname} ist kein gültiger Minecraft-Account")
                 
                 else:
@@ -89,19 +92,31 @@ class PlayerbaseApp(commands.Cog):
         # │                           LIST                             │ 
         # ╰────────────────────────────────────────────────────────────╯
 
-            uuid = self.pb.getPlayerUUID(dcid)
-            minecraftname = getPlayername(uuid)
-            embed = discord.Embed(title="Playerbase-Einsicht",
-                                  description=f"<@{dcid}> ist aktuell mit <:mc:1291359572614844480> **{minecraftname}** verbunden\n-# UUID: `{getUUID(minecraftname)}`",
-                                  color=3908961)
-            embed.set_thumbnail(url=f"https://mineskin.eu/helm/{minecraftname}/100.png")
+            try:
+                uuid = self.pb.getPlayerUUID(dcid)
+                minecraftname = getPlayername(uuid)
+                embed = discord.Embed(title="Playerbase-Einsicht",
+                                    description=f"<@{dcid}> ist aktuell mit <:mc:1291359572614844480> **{minecraftname}** verbunden\n-# UUID: `{getUUID(minecraftname)}`",
+                                    color=3908961)
+                embed.set_thumbnail(url=f"https://mineskin.eu/helm/{minecraftname}/100.png")
+                
+
+            except NoEntryError:
+                embed = discord.Embed(title="",
+                                    description=f"<@{dcid}> ist aktuell mit keinem Minecraft-Account verbunden",
+                                    color=15284296)
+                embed.set_author(name="Kein Eintrag gefunden",
+                                 icon_url="https://cdn.discordapp.com/emojis/1291775670975729716.webp")
+
             await i.response.send_message(embed = embed)
-
-
+            
 
     @app_commands.command(name="playerbaselist", description="Spuckt die gesammte Playerbase aus")
     async def playerbase_get(self, i: discord.Interaction):
         playerbase = self.pb.list()
+
+        # Dieser wilde Code hier sortiert die User nach ihren Discordnamen, die ja aber in der Datenbank
+        # eigentlich garnicht vorliegen
         users = []
         for key, value in playerbase.items():
             discorduser = self.bot.get_user(key)
@@ -109,6 +124,7 @@ class PlayerbaseApp(commands.Cog):
             users.append([key, discordname, value])
         users = sorted(users, key=lambda x: x[1])
         strings = []
+
         for user in users:
             strings.append(f"<@{user[0]}> - {getPlayername(user[2])}")
         string = "\n".join(strings)
