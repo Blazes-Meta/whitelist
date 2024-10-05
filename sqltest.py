@@ -1,16 +1,13 @@
 import sqlite3
 
-def playerbaseGet(dcid: int) -> str:
-    conn = sqlite3.connect('playerbase.db')
+def playerbaseList() -> dict[int:str]:
+    conn = sqlite3.connect("playerbase.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT UUID FROM player WHERE DcID = ?", (dcid,))
-    result = cursor.fetchone()
-    conn.commit()
+    cursor.execute("SELECT DcID, UUID FROM player")
+    rows = cursor.fetchall()
+    result = {row[0]: row[1] for row in rows}
+    #result = [f"<@{row[0]}> - {getPlayername(row[1])}" for row in rows]
     conn.close()
+    return result
 
-    if result:
-        return result[0]
-    else:
-        raise Exception("Spieler nicht registriert")
-    
-print(playerbaseGet(720992368110862407))
+print(playerbaseList())

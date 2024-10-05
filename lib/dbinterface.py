@@ -1,5 +1,5 @@
 import sqlite3
-from lib.mojang import getUUID
+from lib.mojang import *
 
 class NoEntryError(Exception):
     ...
@@ -57,5 +57,12 @@ class Playerbase:
         else:
             raise NoEntryError("Spieler nicht registriert")
         
-    def playerbaseList() -> dict:
-        ...
+    def playerbaseList(self) -> dict:
+        conn = sqlite3.connect(self.dbpath)
+        cursor = conn.cursor()
+        cursor.execute("SELECT DcID, UUID FROM player")
+        rows = cursor.fetchall()
+        result = {row[0]: row[1] for row in rows}
+        #result = [f"<@{row[0]}> - {getPlayername(row[1])}" for row in rows]
+        conn.close()
+        return result

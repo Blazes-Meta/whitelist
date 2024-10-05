@@ -13,3 +13,6 @@ class MissingAppArgument(app_commands.AppCommandError):
 class NoEntryFound(app_commands.AppCommandError):
     """Fehler, wenn in der Datenbank kein Eintrag gefunden werden konnte"""
     ...
+
+class AppAPIError(app_commands.AppCommandError):
+    ...

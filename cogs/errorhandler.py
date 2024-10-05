@@ -48,9 +48,16 @@ class Errorhandler(commands.Cog):
             embed.set_author(name="Ein Eintrag konnte nicht in der Datenbank gefunden werden",
                              icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
             await i.response.send_message(embed = embed, ephemeral=True)
+
+        elif isinstance(error, apps.AppAPIError):
+            embed = discord.Embed(title=f"{str(error)}", color=15774002)
+            embed.set_author(name="Die API hat keine gültige Antwort geliefert",
+                             icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
+            await i.response.send_message(embed = embed, ephemeral=True)
         
         else:
             await i.response.send_message("Es ist ein Fehler aufgetreten")
+            raise error
 
     # ╭────────────────────────────────────────────────────────────╮
     # │            discord.ext command error Handeler              │ 
