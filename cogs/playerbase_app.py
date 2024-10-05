@@ -1,9 +1,9 @@
-OPERATORS = [].append(720992368110862407)
+OPERATORS: list[int] = [].append(720992368110862407)
 
 import discord
 from discord import app_commands
 from discord.ext import commands
-from lib.apps import *
+import lib.apps as apps
 from lib.mojang import *
 from lib.dbinterface import *
 
@@ -30,6 +30,7 @@ class PlayerbaseApp(commands.Cog):
 
         dcid = discorduser.id
         authorid = i.user.id
+        #print(authorid)
 
         if aktion.value == "set": 
         # ╭────────────────────────────────────────────────────────────╮
@@ -50,13 +51,13 @@ class PlayerbaseApp(commands.Cog):
                         await i.response.send_message(embed = embed)
 
                     except APIError as e:
-                        raise AppAPIError(str(e))
+                        raise apps.AppAPIError(f"{minecraftname} ist kein gültiger Minecraft-Account")
                 
                 else:
                     raise MissingAppArgument("Bitte gib einen Minecraftnamen an")
 
             else:
-                raise AppPermissionError(f"Du musst ein Operator oder <@{dcid}> sein, um diesen Eintrag ändern zu können")
+                raise apps.AppPermissionError(f"Du musst ein Operator oder <@{dcid}> sein, um diesen Eintrag ändern zu können")
             
             
         
@@ -78,7 +79,7 @@ class PlayerbaseApp(commands.Cog):
                 await i.response.send_message(embed = embed)
 
             else:
-                raise AppPermissionError(f"Du musst ein Operator oder <@{dcid}> sein, um diesen Eintrag löschen zu können")
+                raise apps.AppPermissionError(f"Du musst ein Operator oder <@{dcid}> sein, um diesen Eintrag löschen zu können")
                 
         
         elif aktion.value == "get":
@@ -98,8 +99,8 @@ class PlayerbaseApp(commands.Cog):
     async def playerbase_get(self, i: discord.Interaction):
         playerbase = self.pb.playerbaseList()
         strings = []
-        for key, value in playerbase.items():
-            strings.append(f"<@{key}> - {getPlayername(value)}")
+        for player in playerbase:
+            strings.append(f"<@{player.dcid}> - {player.minecraftname()}")
         string = "\n".join(strings)
         embed = discord.Embed(title="Playerbase",
                               description=string,
