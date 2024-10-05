@@ -4,17 +4,17 @@ from lib.mojang import *
 class NoEntryError(Exception):
     ...
 
-class Player:
-    def __init__(self, dcid, uuid):
-        self.dcid = dcid
-        self.uuid = uuid
+# class Player:
+#     def __init__(self, dcid, uuid):
+#         self.dcid = dcid
+#         self.uuid = uuid
 
-    def fromminecraftname(dcid: int, minecraftname: str):
-        uuid = getUUID(minecraftname)
-        return Player(dcid=dcid, uuid=uuid)
+#     def fromminecraftname(dcid: int, minecraftname: str):
+#         uuid = getUUID(minecraftname)
+#         return Player(dcid=dcid, uuid=uuid)
     
-    def minecraftname(self) -> str:
-        return getPlayername(self.uuid)
+#     def minecraftname(self) -> str:
+#         return getPlayername(self.uuid)
 
 class Playerbase:
     def __init__(self, dbpath: str = "playerbase.db"):
@@ -35,17 +35,17 @@ class Playerbase:
             return False
         return True
 
-    def playerbaseSet(self, player: Player) -> None:
+    def setPlayer(self, dcid: int, uuid: str) -> None:
         conn = sqlite3.connect(self.dbpath)
         cursor = conn.cursor()
-        if not self.playerExists(player.dcid):
-            cursor.execute("INSERT INTO player (DcID, UUID) VALUES (?, ?)", (player.dcid, player.uuid))
+        if not self.playerExists(dcid):
+            cursor.execute("INSERT INTO player (DcID, UUID) VALUES (?, ?)", (dcid, uuid))
         else:
-            cursor.execute("UPDATE player SET UUID = ? WHERE DcID = ?", (player.dcid, player.uuid))
+            cursor.execute("UPDATE player SET UUID = ? WHERE DcID = ?", (dcid, uuid))
         conn.commit()
         conn.close()
         
-    def playerbaseRemove(self, dcid: int) -> None:
+    def removePlayer(self, dcid: int) -> None:
         if self.playerExists(dcid):
             conn = sqlite3.connect(self.dbpath)
             cursor = conn.cursor()
@@ -55,27 +55,23 @@ class Playerbase:
         else:
             raise NoEntryError("Kein Spieler vorhanden")
         
-    def playerbaseGet(self, dcid: int) -> str:
+    def getPlayerUUID(self, dcid: int) -> str:
         conn = sqlite3.connect(self.dbpath)
         cursor = conn.cursor()
         cursor.execute("SELECT UUID FROM player WHERE DcID = ?", (dcid,))
         result = cursor.fetchone()
         conn.commit()
         conn.close()
-        uuid = getPlayername(result[0])
-
         if result:
-            return Player(dcid=dcid, uuid=uuid)
+            return result[0]
         else:
             raise NoEntryError("Spieler nicht registriert")
         
-    def playerbaseList(self) -> list[Player]:
+    def list(self) -> dict:
         conn = sqlite3.connect(self.dbpath)
         cursor = conn.cursor()
-        cursor.execute("SELECT DcID, UUID FROM player ORDER BY ASC")
+        cursor.execute("SELECT DcID, UUID FROM player")
         rows = cursor.fetchall()
         conn.close()
-        result = []
-        for row in rows:
-            result.append(Player(dcid=row[0], uuid=row[1]))
+        result = {row[0]: row[1] for row in rows}
         return result

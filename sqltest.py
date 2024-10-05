@@ -6,7 +6,6 @@ def playerbaseList() -> dict[int:str]:
     cursor.execute("SELECT DcID, UUID FROM player")
     rows = cursor.fetchall()
     result = {row[0]: row[1] for row in rows}
-    #result = [f"<@{row[0]}> - {getPlayername(row[1])}" for row in rows]
     conn.close()
     return result
 
