@@ -104,7 +104,7 @@ class PlayerbaseApp(commands.Cog):
         playerbase = self.pb.list()
         users = []
         for key, value in playerbase.items():
-            discorduser = await self.bot.get_user(key)
+            discorduser = self.bot.get_user(key)
             discordname = discorduser.display_name
             users.append([key, discordname, value])
         users = sorted(users, key=lambda x: x[1])
