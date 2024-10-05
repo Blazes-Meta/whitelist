@@ -28,12 +28,9 @@ class PlayerbaseApp(commands.Cog):
     
     async def playerbase(self, i: discord.Interaction, aktion: app_commands.Choice[str], discorduser: discord.User, minecraftname: str=None):
 
-        try:
-            dcid = discorduser.id
-            authorid = i.user.id
-            #print(authorid)
-        except TypeError:
-            raise apps.MissingAppArgument("Bitte gib einen gültigen Minecraft-Namen an")
+        dcid = discorduser.id
+        authorid = i.user.id
+        #print(authorid)
 
         if aktion.value == "set": 
         # ╭────────────────────────────────────────────────────────────╮
@@ -58,7 +55,7 @@ class PlayerbaseApp(commands.Cog):
                         raise apps.AppAPIError(f"{minecraftname} ist kein gültiger Minecraft-Account")
                 
                 else:
-                    raise MissingAppArgument("Bitte gib einen Minecraftnamen an")
+                    raise apps.MissingAppArgument("Bitte gib einen gültigen Minecraft-Namen an")
 
             else:
                 raise apps.AppPermissionError(f"Du musst ein Operator oder <@{dcid}> sein, um diesen Eintrag ändern zu können")
