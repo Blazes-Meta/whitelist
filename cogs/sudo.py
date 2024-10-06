@@ -44,6 +44,7 @@ class Bot_Sudo(commands.Cog):
             
             elif arg2 == "playerbase" and ctx.author.id == 720992368110862407:
                 repo.download(file="data/playerbase.db", destination=PLAYERBASE_LOCAL, overwrite=True)
+                await ctx.message.add_reaction("✅")
             elif arg2 == None:
                 raise commands.MissingRequiredArgument(param=commands.Parameter(name='arg2', annotation=str, kind=3))
             else:

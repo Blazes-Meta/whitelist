@@ -61,6 +61,9 @@ class PlayerbaseCMD(commands.Cog):
                 if minecraftname is not None:
                     try:
                         pb.setPlayer(dcid=dcid, uuid=getUUID(minecraftname))
+                        try: repo.upload(file=PLAYERBASE_LOCAL, directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
+                        except Exception as e: raise apps.GithubError(str(e))
+
                         embed = discord.Embed(title="",
                                             description=f"<@{dcid}> wurde mit <:mc:1291359572614844480> **{minecraftname}** verbunden\n-# UUID: `{getUUID(minecraftname)}`",
                                             color=3908961)
@@ -69,10 +72,6 @@ class PlayerbaseCMD(commands.Cog):
                         embed.set_footer(text=f"/playerbase set @{discorduser.name} {minecraftname}",
                                          icon_url=i.user.avatar)
                         embed.set_thumbnail(url=f"https://mineskin.eu/helm/{minecraftname}/100.png")
-
-                        try: repo.upload(file=PLAYERBASE_LOCAL, directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
-                        except Exception as e: raise apps.GithubError(str(e))
-
                         await i.response.send_message(embed = embed)
 
                     except MojangAPIError:
@@ -92,8 +91,11 @@ class PlayerbaseCMD(commands.Cog):
         # ╰────────────────────────────────────────────────────────────╯
 
             if (dcid == authorid) or (authorid in OPERATORS):
-                minecraftname = getPlayername(pb.getPlayerUUID(dcid))
                 pb.removePlayer(dcid=dcid)
+                try: repo.upload(file=PLAYERBASE_LOCAL, directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
+                except Exception as e: raise apps.GithubError(str(e))
+                
+                minecraftname = getPlayername(pb.getPlayerUUID(dcid))
                 embed = discord.Embed(title="",
                                       description=f"<@{dcid}>s Verbindung mit <:mc:1291359572614844480> **{minecraftname}** wurde aufgehoben\n-# UUID: `{getUUID(minecraftname)}`",
                                       color=3908961)
@@ -101,10 +103,6 @@ class PlayerbaseCMD(commands.Cog):
                                  icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
                 embed.set_footer(text=f"/playerbase remove @{discorduser.name}",
                                  icon_url=i.user.avatar)
-                
-                try: repo.upload(file=PLAYERBASE_LOCAL, directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
-                except Exception as e: raise apps.GithubError(str(e))
-
                 await i.response.send_message(embed = embed)
 
             else:
