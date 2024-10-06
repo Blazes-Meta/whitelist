@@ -22,7 +22,7 @@ class PlayerbaseApp(commands.Cog):
 
     playerbase = app_commands.Group(name="playerbase", description="Nimm Änderungen an der Playerbase vor")
 
-    @playerbase.command(name="playerbase", description="Erstelle, Ändere oder Entferne einen EIntrag in der Playerbase")
+    @app_commands.command(name="playerbase", description="Erstelle, Ändere oder Entferne einen EIntrag in der Playerbase")
     @app_commands.choices(aktion=[
         app_commands.Choice(name="set", value="set"),
         app_commands.Choice(name="delete", value="delete"),
@@ -110,7 +110,7 @@ class PlayerbaseApp(commands.Cog):
             await i.response.send_message(embed = embed)
             
 
-    @playerbase.command(name="playerbaselist", description="Spuckt die gesammte Playerbase aus")
+    @app_commands.command(name="playerbaselist", description="Spuckt die gesammte Playerbase aus")
     async def playerbase_get(self, i: discord.Interaction):
         playerbase = self.pb.list()
 
