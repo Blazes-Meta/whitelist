@@ -1,12 +1,15 @@
 import sqlite3
 from lib.mojang import *
+import os
 
 class NoEntryError(Exception):
     ...
 
 class Playerbase:
-    def __init__(self, dbpath: str = "playerbase.db"):
+    def __init__(self, dbpath: str = "tmp/playerbase.db"):
         self.dbpath = dbpath
+        if not os.path.exists(os.path.dirname(dbpath)):
+            os.makedirs(os.path.dirname(dbpath))
         conn = sqlite3.connect(self.dbpath)
         cursor = conn.cursor()
         cursor.execute('CREATE TABLE IF NOT EXISTS player (DcID INTEGER PRIMARY KEY, UUID TEXT NOT NULL)')

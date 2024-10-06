@@ -1,3 +1,5 @@
-test = "325872"
+import os
 
-print(list(test))
+test = "tmp/str.test"
+
+print(os.path.dirname(test))

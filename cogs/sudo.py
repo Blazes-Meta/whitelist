@@ -1,5 +1,15 @@
 import discord
 from discord.ext import commands
+from dotenv import load_dotenv
+from lib.github import Repository
+import os
+
+PLAYERBASE_LOCAL = "tmp/playerbase.db"
+
+load_dotenv()
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+
+repo = Repository(repository="annhilati/whitelist", token=GITHUB_TOKEN)
 
 
 class Bot_Sudo(commands.Cog):
@@ -15,7 +25,7 @@ class Bot_Sudo(commands.Cog):
     #-------------------------------------------------#
 
     @commands.command()
-    async def sudo(self, ctx, arg1=None, arg2=None):
+    async def sudo(self, ctx: commands.Context, arg1=None, arg2=None):
         print(f"[SUDO] {ctx.author.name} ({ctx.author.id}) executed \"{ctx.message.content}\" in {ctx.guild.name} ({ctx.guild.id})")
         
         #-------------------------------------------------#
@@ -32,6 +42,8 @@ class Bot_Sudo(commands.Cog):
                 
                 print(f"[SYNC] Global synchronization of all App-Commands requested. Synchronization can take several minutes to hours.")
             
+            elif arg2 == "playerbase" and ctx.author.id == 720992368110862407:
+                repo.download(file="data/playerbase.db", destination=PLAYERBASE_LOCAL, overwrite=True)
             elif arg2 == None:
                 raise commands.MissingRequiredArgument(param=commands.Parameter(name='arg2', annotation=str, kind=3))
             else:
