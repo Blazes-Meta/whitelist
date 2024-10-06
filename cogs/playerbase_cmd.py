@@ -99,11 +99,20 @@ class PlayerbaseCMD(commands.Cog):
         # ╰────────────────────────────────────────────────────────────╯
 
             if (dcid == authorid) or (authorid in OPERATORS):
+                try:
+                    minecraftname = getPlayername(pb.getPlayerUUID(dcid))
+                except NoEntryError:
+                    embed = discord.Embed(title="",
+                                          description=f"<@{dcid}> ist aktuell mit keinem Minecraft-Account verbunden",
+                                          color=15284296)
+                    embed.set_author(name="Kein Eintrag gefunden",
+                                    icon_url="https://cdn.discordapp.com/emojis/1291775670975729716.webp")
+                    await i.response.send_message(embed = embed)
+
                 pb.removePlayer(dcid=dcid)
                 try: repo.upload(file=PLAYERBASE_LOCAL, directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
                 except Exception as e: raise apps.GithubError(str(e))
                 
-                minecraftname = getPlayername(pb.getPlayerUUID(dcid))
                 embed = discord.Embed(title="",
                                       description=f"<@{dcid}>s Verbindung mit <:mc:1291359572614844480> **{minecraftname}** wurde aufgehoben\n-# UUID: `{getUUID(minecraftname)}`",
                                       color=3908961)
