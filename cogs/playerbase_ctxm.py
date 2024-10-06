@@ -7,7 +7,6 @@ from lib.mojang import *
 from lib.dbinterface import *
 from lib.github import Repository
 
-
 pb = Playerbase(dbpath="tmp/playerbase.db")
 
 async def setup(bot):
@@ -49,9 +48,9 @@ class PlayerbaseCTXM(commands.Cog):
 
         except NoEntryError:
             embed = discord.Embed(title="",
-                                description=f"<@{dcid}> ist aktuell mit keinem Minecraft-Account verbunden",
-                                color=15284296)
+                                  description=f"<@{dcid}> ist aktuell mit keinem Minecraft-Account verbunden",
+                                  color=15284296)
             embed.set_author(name="Kein Eintrag gefunden",
-                                icon_url="https://cdn.discordapp.com/emojis/1291775670975729716.webp")
+                             icon_url="https://cdn.discordapp.com/emojis/1291775670975729716.webp")
 
         await i.response.send_message(embed = embed, ephemeral=True)
