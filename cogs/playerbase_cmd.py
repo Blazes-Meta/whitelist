@@ -61,7 +61,7 @@ class PlayerbaseCMD(commands.Cog):
                 if minecraft is not None:
 
                     if len(minecraft) > 16:
-                        uuid = minecraft
+                        uuid = minecraft.replace("-", "")
                         minecraftname = getPlayername(minecraft)
                     else:
                         uuid = getUUID(minecraft)
