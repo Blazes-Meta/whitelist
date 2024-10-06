@@ -1,4 +1,4 @@
-OPERATORS: list[int] = [].append(720992368110862407)
+OPERATORS: list[int] = [] #720992368110862407
 
 import discord
 from discord import app_commands
@@ -51,7 +51,7 @@ class PlayerbaseApp(commands.Cog):
                         embed.set_thumbnail(url=f"https://mineskin.eu/helm/{minecraftname}/100.png")
                         await i.response.send_message(embed = embed)
 
-                    except MojangAPIError as e:
+                    except MojangAPIError:
                         raise apps.AppAPIError(f"{minecraftname} ist kein gültiger Minecraft-Account")
                 
                 else:
@@ -67,7 +67,7 @@ class PlayerbaseApp(commands.Cog):
         # │                          REMOVE                            │ 
         # ╰────────────────────────────────────────────────────────────╯
 
-            if dcid == authorid or authorid in OPERATORS:
+            if (dcid == authorid) or (authorid in OPERATORS):
                 minecraftname = getPlayername(self.pb.getPlayerUUID(dcid))
                 self.pb.removePlayer(dcid=dcid)
                 embed = discord.Embed(title="",
