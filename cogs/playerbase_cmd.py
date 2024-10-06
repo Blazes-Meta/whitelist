@@ -8,22 +8,23 @@ from lib.mojang import *
 from lib.dbinterface import *
 
 async def setup(bot):
-    await bot.add_cog(PlayerbaseApp(bot))
+    await bot.add_cog(PlayerbaseCMD(bot))
 
-class PlayerbaseApp(commands.Cog):
+class PlayerbaseCMD(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.pb = Playerbase(dbpath="playerbase.db")
 
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"[COGS] {__name__} is ready")
 
-        self.pb = Playerbase(dbpath="playerbase.db")
+        
 
     # Die playerbase-Gruppe ist schon vorhanden, daher fügen wir hier beide Befehle hinzu.
     playerbase = app_commands.Group(name="playerbase", description="Nimm Änderungen an der Playerbase vor")
 
-    @playerbase.command(name="edit", description="Erstelle, Ändere oder Entferne einen Eintrag in der Playerbase")
+    @app_commands.command(name="edit", description="Erstelle, Ändere oder Entferne einen Eintrag in der Playerbase")
     @app_commands.choices(aktion=[
         app_commands.Choice(name="set", value="set"),
         app_commands.Choice(name="delete", value="delete"),
@@ -111,7 +112,7 @@ class PlayerbaseApp(commands.Cog):
             await i.response.send_message(embed = embed)
             
 
-    @playerbase.command(name="list", description="Spuckt die gesammte Playerbase aus")
+    @app_commands.command(name="list", description="Spuckt die gesammte Playerbase aus")
     async def playerbase_get(self, i: discord.Interaction):
         playerbase = self.pb.list()
 
