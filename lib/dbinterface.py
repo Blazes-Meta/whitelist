@@ -16,7 +16,7 @@ class Playerbase:
         conn.commit()
         conn.close()
 
-    def playerExists(self, dcid: int) -> bool:
+    def entryExists(self, dcid: int) -> bool:
         conn = sqlite3.connect(self.dbpath)
         cursor = conn.cursor()
         cursor.execute("SELECT 1 FROM player WHERE DcID = ?", (dcid,))
@@ -29,7 +29,7 @@ class Playerbase:
     def setPlayer(self, dcid: int, uuid: str) -> None:
         conn = sqlite3.connect(self.dbpath)
         cursor = conn.cursor()
-        if not self.playerExists(dcid):
+        if not self.entryExists(dcid):
             cursor.execute("INSERT INTO player (DcID, UUID) VALUES (?, ?)", (dcid, uuid))
         else:
             cursor.execute("UPDATE player SET UUID = ? WHERE DcID = ?", (dcid, uuid))
@@ -37,7 +37,7 @@ class Playerbase:
         conn.close()
         
     def removePlayer(self, dcid: int) -> None:
-        if self.playerExists(dcid):
+        if self.entryExists(dcid):
             conn = sqlite3.connect(self.dbpath)
             cursor = conn.cursor()
             cursor.execute("DELETE FROM player WHERE DcID = ?", (dcid,))

@@ -46,7 +46,7 @@ class PlayerbaseCMD(commands.Cog):
         app_commands.Choice(name="delete", value="delete"),
         app_commands.Choice(name="get", value="get"),])
     
-    async def playerbase(self, i: discord.Interaction, aktion: app_commands.Choice[str], discorduser: discord.User, minecraftname: str=None):
+    async def playerbase(self, i: discord.Interaction, aktion: app_commands.Choice[str], discorduser: discord.User, minecraft: str=None):
 
         dcid = discorduser.id
         authorid = i.user.id
@@ -58,14 +58,22 @@ class PlayerbaseCMD(commands.Cog):
         # ╰────────────────────────────────────────────────────────────╯
             
             if dcid == authorid or authorid in OPERATORS:
-                if minecraftname is not None:
+                if minecraft is not None:
+
+                    if len(minecraft) > 16:
+                        uuid = minecraft
+                        minecraftname = getPlayername(minecraft)
+                    else:
+                        uuid = getUUID(minecraft)
+                        minecraftname = minecraft
+                    
                     try:
-                        pb.setPlayer(dcid=dcid, uuid=getUUID(minecraftname))
+                        pb.setPlayer(dcid=dcid, uuid=uuid)
                         try: repo.upload(file=PLAYERBASE_LOCAL, directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
                         except Exception as e: raise apps.GithubError(str(e))
 
                         embed = discord.Embed(title="",
-                                            description=f"<@{dcid}> wurde mit <:mc:1291359572614844480> **{minecraftname}** verbunden\n-# UUID: `{getUUID(minecraftname)}`",
+                                            description=f"<@{dcid}> wurde mit <:mc:1291359572614844480> **{minecraftname}** verbunden\n-# UUID: `{uuid}`",
                                             color=3908961)
                         embed.set_author(name="Ein Discord-Nutzer wurde mit Minecraft verbunden",
                                          icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
@@ -75,7 +83,7 @@ class PlayerbaseCMD(commands.Cog):
                         await i.response.send_message(embed = embed)
 
                     except MojangAPIError:
-                        raise apps.AppAPIError(f"{minecraftname} ist kein gültiger Minecraft-Account")
+                        raise apps.AppAPIError(f"{minecraft} ist kein gültiger Minecraft-Account")
                 
                 else:
                     raise apps.MissingAppArgument("Bitte gib einen gültigen Minecraft-Namen an")
