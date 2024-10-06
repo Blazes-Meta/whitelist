@@ -12,3 +12,6 @@ class MissingAppArgument(app_commands.AppCommandError):
 
 class AppAPIError(app_commands.AppCommandError):
     ...
+
+class GithubError(app_commands.AppCommandError):
+    ...

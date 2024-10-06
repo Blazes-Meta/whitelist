@@ -18,6 +18,7 @@ class PlayerbaseCTXM(commands.Cog):
             callback=self.user_details)
         self.bot.tree.add_command(self.ctx_menu)
 
+
     async def cog_unload(self) -> None:
         self.bot.tree.remove_command(self.ctx_menu.name, type=self.ctx_menu.type)
 
@@ -47,4 +48,4 @@ class PlayerbaseCTXM(commands.Cog):
             embed.set_author(name="Kein Eintrag gefunden",
                                 icon_url="https://cdn.discordapp.com/emojis/1291775670975729716.webp")
 
-        await i.response.send_message(embed = embed)
+        await i.response.send_message(embed = embed, ephemeral=True)

@@ -54,6 +54,14 @@ class Errorhandler(commands.Cog):
             embed.set_author(name="Die API hat keine gültige Antwort geliefert",
                              icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
             await i.response.send_message(embed = embed, ephemeral=True)
+
+        elif isinstance(error, apps.GithubError):
+            embed = discord.Embed(title=f"",
+                                  description=str(error),
+                                  color=15774002)
+            embed.set_author(name="Während des Prozesses gab es einen Fehler, der mit GitHub zu tun hat.",
+                             icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
+            await i.response.send_message(embed = embed, ephemeral=True)
         
         else:
             await i.response.send_message("Es ist ein Fehler aufgetreten")

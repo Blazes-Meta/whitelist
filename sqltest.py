@@ -1,6 +1,3 @@
-def f(hex_color):
-    if hex_color.startswith("#"):
-        hex_color = hex_color[1:]
-    return int(hex_color, 16)
+test = "325872"
 
-print(f("#e93848"))
+print(list(test))
