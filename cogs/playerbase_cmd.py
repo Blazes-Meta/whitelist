@@ -135,7 +135,6 @@ class PlayerbaseCMD(commands.Cog):
     async def playerbaseGet(self, i: discord.Interaction, discorduser: discord.User):
         
         dcid = discorduser.id
-        authorid = i.user.id
 
         try:
             uuid = pb.getPlayerUUID(dcid)
