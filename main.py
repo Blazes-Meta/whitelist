@@ -4,8 +4,16 @@ import discord
 from discord.ext import commands, tasks
 from discord.utils import setup_logging
 from dotenv import load_dotenv
+from lib.github import Repository
+
+PLAYERBASE_LOCAL = "tmp/playerbase.db"
+
+load_dotenv()
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
+repo = Repository(repository="annhilati/whitelist", token=GITHUB_TOKEN)
 
 async def loadCogs():
     for filename in os.listdir("./cogs"):
@@ -18,11 +26,13 @@ async def main():
     async with bot:
         await loadCogs()
         setup_logging()
-        await bot.start(str(os.getenv("BOT_TOKEN")))
+        await bot.start(str(BOT_TOKEN))
 
 @bot.event
 async def on_ready():
     print(f"[AUTH] Bot is connected")
     print(f"[AUTH] Logged in as {bot.user} (ID: {bot.user.id})")
+
+    repo.download(file="data/playerbase.db", destination=PLAYERBASE_LOCAL, overwrite=True)
 
 asyncio.run(main()) # Diese Zeile wird fortlaufend ausgeführt und sollte deswegen am Ende stehen
