@@ -20,9 +20,10 @@ class PlayerbaseApp(commands.Cog):
 
         self.pb = Playerbase(dbpath="playerbase.db")
 
+    # Die playerbase-Gruppe ist schon vorhanden, daher fügen wir hier beide Befehle hinzu.
     playerbase = app_commands.Group(name="playerbase", description="Nimm Änderungen an der Playerbase vor")
 
-    @app_commands.command(name="playerbase", description="Erstelle, Ändere oder Entferne einen EIntrag in der Playerbase")
+    @playerbase.command(name="edit", description="Erstelle, Ändere oder Entferne einen Eintrag in der Playerbase")
     @app_commands.choices(aktion=[
         app_commands.Choice(name="set", value="set"),
         app_commands.Choice(name="delete", value="delete"),
@@ -110,7 +111,7 @@ class PlayerbaseApp(commands.Cog):
             await i.response.send_message(embed = embed)
             
 
-    @app_commands.command(name="playerbaselist", description="Spuckt die gesammte Playerbase aus")
+    @playerbase.command(name="list", description="Spuckt die gesammte Playerbase aus")
     async def playerbase_get(self, i: discord.Interaction):
         playerbase = self.pb.list()
 
@@ -134,8 +135,4 @@ class PlayerbaseApp(commands.Cog):
         embed = discord.Embed(title="Playerbase",
                               description=string,
                               color=3908961)
-        # embed.set_author(name="Der Eintrag eines Discord-Nutzers wurde entfernt",
-        #                     icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
-        # embed.set_footer(text=f"/playerbase remove @{discorduser.name}",
-        #                     icon_url=f"https://mineskin.eu/helm/{minecraftname}/100.png")
         await i.response.send_message(embed = embed)
