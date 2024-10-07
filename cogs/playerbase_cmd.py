@@ -57,7 +57,7 @@ class PlayerbaseCMD(commands.Cog):
 
         if dcid == authorid or authorid in OPERATORS:
             if minecraft is not None:
-
+                
                 try:
                     if len(minecraft) > 16:
                         uuid = minecraft.replace("-", "")
@@ -65,10 +65,7 @@ class PlayerbaseCMD(commands.Cog):
                     else:
                         uuid = getUUID(minecraft)
                         minecraftname = minecraft
-                except MojangAPIError as e:
-                    raise apps.AppAPIError(str(e))
-                
-                try:
+
                     pb.setPlayer(dcid=dcid, uuid=uuid)
                     try: repo.upload(file=PLAYERBASE_LOCAL, directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
                     except Exception as e: raise apps.GithubError(str(e))
