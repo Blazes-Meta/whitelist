@@ -58,12 +58,15 @@ class PlayerbaseCMD(commands.Cog):
         if dcid == authorid or authorid in OPERATORS:
             if minecraft is not None:
 
-                if len(minecraft) > 16:
-                    uuid = minecraft.replace("-", "")
-                    minecraftname = getPlayername(minecraft)
-                else:
-                    uuid = getUUID(minecraft)
-                    minecraftname = minecraft
+                try:
+                    if len(minecraft) > 16:
+                        uuid = minecraft.replace("-", "")
+                        minecraftname = getPlayername(minecraft)
+                    else:
+                        uuid = getUUID(minecraft)
+                        minecraftname = minecraft
+                except MojangAPIError as e:
+                    raise apps.AppAPIError(str(e))
                 
                 try:
                     pb.setPlayer(dcid=dcid, uuid=uuid)
