@@ -31,6 +31,7 @@ async def setup(bot):
 class PlayerbaseCMD(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.user_cache = {}
         
 
     @commands.Cog.listener()
@@ -161,20 +162,19 @@ class PlayerbaseCMD(commands.Cog):
 
     @app_commands.command(name="listplayerbase", description="Spuckt die gesamte Playerbase aus")
     async def playerbase_get(self, i: discord.Interaction):
-        # Verzögere die Antwort, während der Bot die Daten verarbeitet
         await i.response.defer()
 
         playerbase = pb.list()
 
-        # Dieser wilde Code hier sortiert die User nach ihren Discordnamen, die ja aber in der Datenbank
-        # eigentlich garnicht vorliegen
         users = []
         for key, value in playerbase.items():
-            discorduser = self.bot.get_user(key)
-            discordname = discorduser.display_name
+            # Überprüfe, ob der User bereits im Cache ist
+            if key not in self.user_cache:
+                discorduser = self.bot.get_user(key)
+                self.user_cache[key] = discorduser.display_name  # Speichere den Display-Namen im Cache
+            discordname = self.user_cache[key]
             users.append([key, discordname, value])
         
-        # Sortiere die User nach ihrem Discordnamen
         users = sorted(users, key=lambda x: x[1])
         strings = []
 
@@ -190,6 +190,5 @@ class PlayerbaseCMD(commands.Cog):
             description=string,
             color=3908961
         )
-        
-        # Sende die Antwort als Follow-up, nachdem die Verarbeitung abgeschlossen ist
+
         await i.followup.send(embed=embed)
