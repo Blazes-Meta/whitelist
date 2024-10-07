@@ -166,6 +166,9 @@ class PlayerbaseCMD(commands.Cog):
 
         playerbase = pb.list()
 
+
+        # Dieser wilde Code hier sortiert die User nach ihren Discordnamen, die ja aber in der Datenbank
+        # eigentlich garnicht vorliegen
         users = []
         for key, value in playerbase.items():
             # Überprüfe, ob der User bereits im Cache ist
