@@ -159,8 +159,11 @@ class PlayerbaseCMD(commands.Cog):
     # │                           LIST                             │ 
     # ╰────────────────────────────────────────────────────────────╯
 
-    @app_commands.command(name="listplayerbase", description="Spuckt die gesammte Playerbase aus")
+    @app_commands.command(name="listplayerbase", description="Spuckt die gesamte Playerbase aus")
     async def playerbase_get(self, i: discord.Interaction):
+        # Verzögere die Antwort, während der Bot die Daten verarbeitet
+        await i.response.defer()
+
         playerbase = pb.list()
 
         # Dieser wilde Code hier sortiert die User nach ihren Discordnamen, die ja aber in der Datenbank
@@ -170,6 +173,8 @@ class PlayerbaseCMD(commands.Cog):
             discorduser = self.bot.get_user(key)
             discordname = discorduser.display_name
             users.append([key, discordname, value])
+        
+        # Sortiere die User nach ihrem Discordnamen
         users = sorted(users, key=lambda x: x[1])
         strings = []
 
@@ -180,7 +185,11 @@ class PlayerbaseCMD(commands.Cog):
         if len(string) == 0:
             string = "Keine Einträge vorhanden"
 
-        embed = discord.Embed(title="Playerbase",
-                              description=string,
-                              color=3908961)
-        await i.response.send_message(embed = embed)
+        embed = discord.Embed(
+            title="Playerbase",
+            description=string,
+            color=3908961
+        )
+        
+        # Sende die Antwort als Follow-up, nachdem die Verarbeitung abgeschlossen ist
+        await i.followup.send(embed=embed)
