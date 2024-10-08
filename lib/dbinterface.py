@@ -14,6 +14,7 @@ class Playerbase:
         cursor = conn.cursor()
         cursor.execute('CREATE TABLE IF NOT EXISTS player (DcID INTEGER PRIMARY KEY, UUID TEXT NOT NULL)')
         cursor.execute('CREATE TABLE IF NOT EXISTS whitelist (DcID INTEGER PRIMARY KEY)')
+        #cursor.execute('CREATE TABLE whitelist (DcID INTEGER PRIMARY KEY)')
         conn.commit()
         conn.close()
 

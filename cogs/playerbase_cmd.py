@@ -42,6 +42,8 @@ class PlayerbaseCMD(commands.Cog):
     async def on_ready(self):
         print(f"[COGS] {__name__} is ready")
 
+        repo.download(file="data/playerbase.db", destination=PLAYERBASE_LOCAL, overwrite=True)
+
     
     # ╭────────────────────────────────────────────────────────────╮
     # │                            SET                             │ 
