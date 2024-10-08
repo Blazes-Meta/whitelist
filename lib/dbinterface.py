@@ -13,6 +13,7 @@ class Playerbase:
         conn = sqlite3.connect(self.dbpath)
         cursor = conn.cursor()
         cursor.execute('CREATE TABLE IF NOT EXISTS player (DcID INTEGER PRIMARY KEY, UUID TEXT NOT NULL)')
+        cursor.execute('CREATE TABLE IF NOT EXISTS whitelist (DcID INTEGER PRIMARY KEY)')
         conn.commit()
         conn.close()
 
@@ -66,3 +67,30 @@ class Playerbase:
         conn.close()
         result = {row[0]: row[1] for row in rows}
         return result
+    
+    def isonWhitelist(self, dcid: int) -> bool:
+        conn = sqlite3.connect(self.dbpath)
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1 FROM whitelist WHERE DcID = ?", (dcid,))
+        result = cursor.fetchone()
+        conn.close()
+        if result is None:
+            return False
+        return True
+    
+    def whitelistAdd(self, dcid: int) -> None:
+        conn = sqlite3.connect(self.dbpath)
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO whitelist (DcID) VALUES (?)", (dcid))
+        conn.commit()
+        conn.close()
+
+    def whitelistRemove(self, dcid: int) -> None:
+        if self.isonWhitelist(dcid):
+            conn = sqlite3.connect(self.dbpath)
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM whitelist WHERE DcID = ?", (dcid,))
+            conn.commit()
+            conn.close()
+        else:
+            raise NoEntryError("Kein Spieler vorhanden")
