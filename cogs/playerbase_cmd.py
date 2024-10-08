@@ -38,7 +38,6 @@ class PlayerbaseCMD(commands.Cog):
         self.user_cache = {}
 
     async def cog_load(self):
-        # Registriere die Gruppe korrekt
         self.bot.tree.add_command(playerbaseGroup)
         
     @commands.Cog.listener()
