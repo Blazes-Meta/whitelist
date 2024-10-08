@@ -32,6 +32,7 @@ async def main():
 async def on_ready():
     print(f"[AUTH] Bot is connected")
     print(f"[AUTH] Logged in as {bot.user} (ID: {bot.user.id})")
+    #bot.tree.clear_commands(guild=None)
 
     repo.download(file="data/playerbase.db", destination=PLAYERBASE_LOCAL, overwrite=True)
 

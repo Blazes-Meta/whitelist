@@ -38,7 +38,8 @@ class PlayerbaseCMD(commands.Cog):
         self.user_cache = {}
 
     async def cog_load(self):
-        self.bot.tree.add_command(playerbaseGroup)
+        #self.bot.tree.add_command(playerbaseGroup)
+        ...
         
     @commands.Cog.listener()
     async def on_ready(self):
@@ -48,7 +49,7 @@ class PlayerbaseCMD(commands.Cog):
     # ╭────────────────────────────────────────────────────────────╮
     # │                            SET                             │ 
     # ╰────────────────────────────────────────────────────────────╯
-    @playerbaseGroup.command(name="set", description="Verbinde einen Discord-Nutzer mit Minecraft")
+    @app_commands.command(name="set", description="Verbinde einen Discord-Nutzer mit Minecraft")
     async def playerbaseSet(self, i: discord.Interaction, discorduser: discord.User, minecraft: str):
 
         dcid = discorduser.id
@@ -92,7 +93,7 @@ class PlayerbaseCMD(commands.Cog):
     # │                          REMOVE                            │ 
     # ╰────────────────────────────────────────────────────────────╯
         
-    @playerbaseGroup.command(name="delete", description="Entferne einen Eintrag aus der Playerbase")
+    @app_commands.command(name="delete", description="Entferne einen Eintrag aus der Playerbase")
     async def playerbaseDelete(self, i: discord.Interaction, discorduser: discord.User):
     
         dcid = discorduser.id
@@ -130,7 +131,7 @@ class PlayerbaseCMD(commands.Cog):
     # ╭────────────────────────────────────────────────────────────╮
     # │                            GET                             │ 
     # ╰────────────────────────────────────────────────────────────╯
-    @playerbaseGroup.command(name="get", description="Gibt einen Eintrag zurück")
+    @app_commands.command(name="get", description="Gibt einen Eintrag zurück")
     async def playerbaseGet(self, i: discord.Interaction, discorduser: discord.User):
         
         dcid = discorduser.id
@@ -158,7 +159,7 @@ class PlayerbaseCMD(commands.Cog):
     # │                           LIST                             │ 
     # ╰────────────────────────────────────────────────────────────╯
 
-    @playerbaseGroup.command(name="list", description="Spuckt die gesamte Playerbase aus")
+    @app_commands.command(name="list", description="Spuckt die gesamte Playerbase aus")
     async def playerbase_get(self, i: discord.Interaction):
         await i.response.defer()
 
