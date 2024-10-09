@@ -63,6 +63,22 @@ class Errorhandler(commands.Cog):
                              icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
             await i.response.send_message(embed = embed, ephemeral=True)
 
+        elif isinstance(error, apps.AlreadyExists):
+            embed = discord.Embed(title=f"",
+                                  description=str(error),
+                                  color=15774002)
+            embed.set_author(name="Der Spieler ist bereits in der Whitelist",
+                             icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
+            await i.response.send_message(embed = embed, ephemeral=True)
+
+        elif isinstance(error, apps.DoesntExist):
+            embed = discord.Embed(title=f"",
+                                  description=str(error),
+                                  color=15774002)
+            embed.set_author(name="Der Spieler ist gar nicht auf der Whitelist",
+                             icon_url="https://cdn.discordapp.com/emojis/1233093266916773991.webp")
+            await i.response.send_message(embed = embed, ephemeral=True)
+
         else:
             await i.response.send_message("Es ist ein Fehler aufgetreten")
             raise error

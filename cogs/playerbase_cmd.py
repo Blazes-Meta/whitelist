@@ -55,35 +55,30 @@ class PlayerbaseCMD(commands.Cog):
         authorid = i.user.id
 
         if dcid == authorid or authorid in OPERATORS:
-            if minecraft is not None:
-                
-                try:
-                    if len(minecraft) > 16:
-                        uuid = minecraft.replace("-", "")
-                        minecraftname = getPlayername(minecraft)
-                    else:
-                        uuid = getUUID(minecraft)
-                        minecraftname = minecraft
+            try:
+                if len(minecraft) > 16:
+                    uuid = minecraft.replace("-", "")
+                    minecraftname = getPlayername(minecraft)
+                else:
+                    uuid = getUUID(minecraft)
+                    minecraftname = minecraft
 
-                    pb.setPlayer(dcid=dcid, uuid=uuid)
-                    try: repo.upload(file=PLAYERBASE_LOCAL, directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
-                    except Exception as e: raise apps.GithubError(str(e))
+                pb.setPlayer(dcid=dcid, uuid=uuid)
+                try: repo.upload(file=PLAYERBASE_LOCAL, directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
+                except Exception as e: raise apps.GithubError(str(e))
 
-                    embed = discord.Embed(title="",
-                                        description=f"<@{dcid}> wurde mit <:mc:1291359572614844480> **{minecraftname}** verbunden\n-# UUID: `{uuid}`",
-                                        color=3908961)
-                    embed.set_author(name="Ein Discord-Nutzer wurde mit Minecraft verbunden",
-                                        icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
-                    embed.set_footer(text=f"/playerbase set @{discorduser.name} {minecraftname}",
-                                        icon_url=i.user.avatar)
-                    embed.set_thumbnail(url=f"https://mineskin.eu/helm/{minecraftname}/100.png")
-                    await i.response.send_message(embed = embed)
+                embed = discord.Embed(title="",
+                                    description=f"<@{dcid}> wurde mit <:mc:1291359572614844480> **{minecraftname}** verbunden\n-# UUID: `{uuid}`",
+                                    color=3908961)
+                embed.set_author(name="Ein Discord-Nutzer wurde mit Minecraft verbunden",
+                                    icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
+                embed.set_footer(text=f"/playerbase set @{discorduser.name} {minecraftname}",
+                                    icon_url=i.user.avatar)
+                embed.set_thumbnail(url=f"https://mineskin.eu/helm/{minecraftname}/100.png")
+                await i.response.send_message(embed = embed)
 
-                except MojangAPIError:
-                    raise apps.AppAPIError(f"{minecraft} ist kein gültiger Minecraft-Account")
-            
-            else:
-                raise apps.MissingAppArgument("Bitte gib einen gültigen Minecraft-Namen an")
+            except MojangAPIError:
+                raise apps.AppAPIError(f"{minecraft} ist kein gültiger Minecraft-Account")
 
         else:
             raise apps.AppPermissionError(f"Du musst ein Operator oder <@{dcid}> sein, um diesen Eintrag ändern zu können")

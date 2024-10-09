@@ -15,3 +15,9 @@ class AppAPIError(app_commands.AppCommandError):
 
 class GithubError(app_commands.AppCommandError):
     ...
+
+class AlreadyExists(app_commands.AppCommandError):
+    ...
+
+class DoesntExist(app_commands.AppCommandError):
+    ...

@@ -82,13 +82,13 @@ class Playerbase:
     def whitelistAdd(self, dcid: int) -> None:
         conn = sqlite3.connect(self.dbpath)
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO whitelist (DcID) VALUES (?)", (dcid))
+        cursor.execute("INSERT INTO whitelist (DcID) VALUES (?)", (dcid,))
         conn.commit()
         conn.close()
 
     def whitelistRemove(self, dcid: int) -> None:
         if self.isonWhitelist(dcid):
-            conn = sqlite3.connect(self.dbpath)
+            conn = sqlite3.connect(self.dbpath, timeout=5)
             cursor = conn.cursor()
             cursor.execute("DELETE FROM whitelist WHERE DcID = ?", (dcid,))
             conn.commit()

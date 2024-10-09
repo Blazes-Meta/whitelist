@@ -52,41 +52,77 @@ class WhitelistCMD(commands.Cog):
         
         dcid = discorduser.id
         registered = pb.entryExists(dcid)
+        authorid = i.user.id
 
-        pb.whitelistAdd(dcid)
-        try: repo.upload(file=PLAYERBASE_LOCAL, directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
-        except Exception as e: raise apps.GithubError(str(e))
+        if authorid in OPERATORS:
+            try:
+                pb.whitelistAdd(dcid)
+            except sqlite3.IntegrityError:
+                raise apps.AlreadyExists
 
-        if registered:
-            uuid = pb.getPlayerUUID(dcid)
-            minecraftname = getPlayername(uuid)
+            try: repo.upload(file=PLAYERBASE_LOCAL, directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
+            except Exception as e: raise apps.GithubError(str(e))
 
-            embed = discord.Embed(title="",
-                                  description=f"<@{dcid}> wurde als <:mc:1291359572614844480> **{minecraftname}** zur Whitelist hinzugefügt\n-# UUID: `{uuid}`",
-                                  color=3908961)
-            embed.set_author(name="Ein Spieler wurde zur Whitelist hinzugefügt",
-                            icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
-            embed.set_footer(text=f"/whitelist add @{discorduser.name}",
-                            icon_url=i.user.avatar)
-            embed.set_thumbnail(url=f"https://mineskin.eu/helm/{minecraftname}/100.png")
+            if registered:
+                uuid = pb.getPlayerUUID(dcid)
+                minecraftname = getPlayername(uuid)
+
+                embed = discord.Embed(title="",
+                                    description=f"<@{dcid}> wurde als <:mc:1291359572614844480> **{minecraftname}** zur Whitelist hinzugefügt\n-# UUID: `{uuid}`",
+                                    color=3908961)
+                embed.set_author(name="Ein Spieler wurde zur Whitelist hinzugefügt",
+                                icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
+                embed.set_footer(text=f"/whitelist add @{discorduser.name}",
+                                icon_url=i.user.avatar)
+                embed.set_thumbnail(url=f"https://mineskin.eu/helm/{minecraftname}/100.png")
+
+            else:
+                embed = discord.Embed(title="",
+                                    description=f"<@{dcid}> wurde zur Whitelist hinzugefügt\n-# Dieser Account ist noch nicht mit Minecraft verknüpft. Nutze `/playerbase set` um dies zu tun.",
+                                    color=3908961)
+                embed.set_author(name="Ein Spieler wurde zur Whitelist hinzugefügt",
+                                icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
+                embed.set_footer(text=f"/whitelist add @{discorduser.name}",
+                                icon_url=i.user.avatar)
+            
+            await i.response.send_message(embed = embed)
 
         else:
-            embed = discord.Embed(title="",
-                                  description=f"<@{dcid}> wurde zur Whitelist hinzugefügt\n-# Dieser Account ist noch nicht mit Minecraft verknüpft. Nutze `/playerbase set` um dies zu tun.",
-                                  color=3908961)
-            embed.set_author(name="Ein Spieler wurde zur Whitelist hinzugefügt",
-                            icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
-            embed.set_footer(text=f"/whitelist add @{discorduser.name}",
-                            icon_url=i.user.avatar)
-        
-        await i.response.send_message(embed = embed)
+            raise apps.AppPermissionError(f"Du musst ein Operator sein, um diesen Eintrag ändern zu können")
         
     # ╭────────────────────────────────────────────────────────────╮
     # │                           REMOVE                           │ 
     # ╰────────────────────────────────────────────────────────────╯
     @whitelist.command(name="delete", description="Gibt einen Eintrag zurück")
     async def whitelistRemove(self, i: discord.Interaction, discorduser: discord.User):
-        ...
+        
+        dcid = discorduser.id
+        whitelisted = pb.isonWhitelist(dcid)
+        authorid = i.user.id
+
+        if authorid in OPERATORS:   
+            if whitelisted:
+
+                pb.whitelistRemove(dcid)
+
+                embed = discord.Embed(title="",
+                                    description=f"<@{dcid}> wurde von der Whitelist gestrichen",
+                                    color=3908961)
+                embed.set_author(name="Ein Spieler wurde aus der Whitelist entfernt",
+                                icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
+                embed.set_footer(text=f"/whitelist add @{discorduser.name}",
+                                icon_url=i.user.avatar)
+
+            else:
+                raise apps.DoesntExist
+                
+            try: repo.upload(file=PLAYERBASE_LOCAL, directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
+            except Exception as e: raise apps.GithubError(str(e))
+            
+            await i.response.send_message(embed = embed)
+
+        else:
+            raise apps.AppPermissionError(f"Du musst ein Operator sein, um diesen Eintrag ändern zu können")
             
 
     # ╭────────────────────────────────────────────────────────────╮
