@@ -188,8 +188,9 @@ class PlayerbaseCMD(commands.Cog):
 
         embed = discord.Embed(
             title="Playerbase",
-            description=string,
+            description="-# Aufgrund von Caching könnten die Spielernamen veraltet sein\n\n" + string,
             color=3908961
         )
+        embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/1291359572614844480.webp")
 
         await i.followup.send(embed=embed)
