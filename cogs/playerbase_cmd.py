@@ -34,6 +34,7 @@ class PlayerbaseCMD(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.user_cache = {}
+        self.playername_cache = {}
         
     playerbase = app_commands.Group(name="playerbase", description="Nimm Änderungen an der Playerbase vor")
 
@@ -167,15 +168,18 @@ class PlayerbaseCMD(commands.Cog):
             # Überprüfe, ob der User bereits im Cache ist
             if key not in self.user_cache:
                 discorduser = self.bot.get_user(key)
-                self.user_cache[key] = discorduser.display_name  # Speichere den Display-Namen im Cache
-            discordname = self.user_cache[key]
-            users.append([key, discordname, value])
+                self.user_cache[key] = discorduser.display_name
+            discordname: str = self.user_cache[key]
+            users.append([key, discordname.lower(), value])
         
         users = sorted(users, key=lambda x: x[1])
         strings = []
 
         for user in users:
-            strings.append(f"<@{user[0]}> - {discord.utils.escape_markdown(getPlayername(user[2]))}")
+            if user[0] not in self.playername_cache:
+                self.playername_cache[user[0]] = getPlayername(user[2])
+            playername = self.playername_cache[user[0]]
+            strings.append(f"<@{user[0]}> - {discord.utils.escape_markdown(playername)}")
 
         string = "\n".join(strings)
 
