@@ -17,7 +17,7 @@ import os
 
 load_dotenv()
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-repo = Repository(repository="annhilati/whitelist", token=GITHUB_TOKEN)
+repo = Repository(repository="Blazes-Meta/whitelist", token=GITHUB_TOKEN)
 
 pb = Playerbase(dbpath=PLAYERBASE_LOCAL)
 
