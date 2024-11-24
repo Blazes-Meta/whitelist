@@ -13,7 +13,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
-repo = Repository(repository="annhilati/whitelist", token=GITHUB_TOKEN)
+repo = Repository(repository="Blazes-Meta/whitelist", token=GITHUB_TOKEN)
 
 async def loadCogs():
     for filename in os.listdir("./cogs"):
