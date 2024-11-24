@@ -9,7 +9,7 @@ PLAYERBASE_LOCAL = "tmp/playerbase.db"
 load_dotenv()
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
-repo = Repository(repository="annhilati/whitelist", token=GITHUB_TOKEN)
+repo = Repository(repository="Blazes-Meta/whitelist", token=GITHUB_TOKEN)
 
 
 class Bot_Sudo(commands.Cog):
