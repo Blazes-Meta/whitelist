@@ -171,7 +171,7 @@ class PlayerbaseCMD(commands.Cog):
                 try: # Soll einen Bug fixen, bei dem kein User gefundedn wird
                     self.user_cache[key] = discorduser.display_name
                 except:
-                    self.user_cache[key] = str(key)
+                    self.user_cache[key] = "zzz" # SOrgt dafür, dass die dann ganz unten einsortiert werden
             discordname: str = self.user_cache[key]
             users.append([key, discordname.lower(), value])
         
