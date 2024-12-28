@@ -34,7 +34,7 @@ class Playerbase:
         if not self.entryExists(dcid):
             cursor.execute("INSERT INTO player (DcID, UUID) VALUES (?, ?)", (dcid, uuid))
         else:
-            cursor.execute("UPDATE player SET UUID = ? WHERE DcID = ?", (dcid, uuid))
+            cursor.execute("UPDATE player SET UUID = ? WHERE DcID = ?", (uuid, dcid))
         conn.commit()
         conn.close()
         
