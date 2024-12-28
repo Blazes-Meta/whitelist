@@ -168,7 +168,7 @@ class PlayerbaseCMD(commands.Cog):
             # Überprüfe, ob der User bereits im Cache ist
             if key not in self.user_cache:
                 discorduser = self.bot.get_user(key)
-                try:
+                try: # Soll einen Bug fixen, bei dem kein User gefundedn wird
                     self.user_cache[key] = discorduser.display_name
                 except:
                     self.user_cache[key] = key
