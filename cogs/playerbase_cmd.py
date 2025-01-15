@@ -1,6 +1,3 @@
-OPERATORS: list[int] = [720992368110862407] #
-PLAYERBASE_LOCAL = "tmp/playerbase.db"
-
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -9,17 +6,20 @@ from lib.mojang import *
 from lib.dbinterface import *
 from lib.github import Repository
 from dotenv import load_dotenv
+from yaml import load
 import os
 
 # ╭────────────────────────────────╮
 # │              ENV               │ 
 # ╰────────────────────────────────╯
 
-load_dotenv()
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-repo = Repository(repository="Blazes-Meta/whitelist", token=GITHUB_TOKEN)
+with open("config.yaml", "r") as config:
+    config = load(config)
 
-pb = Playerbase(dbpath=PLAYERBASE_LOCAL)
+load_dotenv()
+
+repo = Repository(repository=config["github"]["repository"], token=os.getenv("GITHUB_TOKEN"))
+pb = Playerbase(dbpath=config["database"]["local-path"])
 
 # ╭────────────────────────────────╮
 # │              Cog               │ 
@@ -27,8 +27,6 @@ pb = Playerbase(dbpath=PLAYERBASE_LOCAL)
 
 async def setup(bot):
     await bot.add_cog(PlayerbaseCMD(bot))
-
-
 
 class PlayerbaseCMD(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -43,9 +41,8 @@ class PlayerbaseCMD(commands.Cog):
     async def on_ready(self):
         print(f"[COGS] {__name__} is ready")
 
-        repo.download(file="data/playerbase.db", destination=PLAYERBASE_LOCAL, overwrite=True)
+        repo.download(file="data/playerbase.db", destination=pb.dbpath, overwrite=True)
 
-    
     # ╭────────────────────────────────────────────────────────────╮
     # │                            SET                             │ 
     # ╰────────────────────────────────────────────────────────────╯
@@ -53,9 +50,9 @@ class PlayerbaseCMD(commands.Cog):
     async def playerbaseSet(self, i: discord.Interaction, discorduser: discord.User, minecraft: str):
 
         dcid = discorduser.id
-        authorid = i.user.id
+        cmduser = i.user.id
 
-        if dcid == authorid or authorid in OPERATORS:
+        if dcid == cmduser or cmduser in config["permissions"]["operators"]:
             try:
                 if len(minecraft) > 16:
                     uuid = minecraft.replace("-", "")
@@ -65,16 +62,17 @@ class PlayerbaseCMD(commands.Cog):
                     minecraftname = minecraft
 
                 pb.setPlayer(dcid=dcid, uuid=uuid)
-                try: repo.upload(file=PLAYERBASE_LOCAL, directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
+
+                try: repo.upload(file=pb.dbpath, directory=config["database"]["github-path"], msg="Playerbase-Upload", overwrite=True)
                 except Exception as e: raise apps.GithubError(str(e))
 
                 embed = discord.Embed(title="",
-                                    description=f"<@{dcid}> wurde mit <:mc:1291359572614844480> **{minecraftname}** verbunden\n-# UUID: `{uuid}`",
-                                    color=3908961)
+                                      description=f"<@{dcid}> wurde mit <:mc:1291359572614844480> **{minecraftname}** verbunden\n-# UUID: `{uuid}`",
+                                      color=3908961)
                 embed.set_author(name="Ein Discord-Nutzer wurde mit Minecraft verbunden",
-                                    icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
+                                 icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
                 embed.set_footer(text=f"/playerbase set @{discorduser.name} {minecraftname}",
-                                    icon_url=i.user.avatar)
+                                 icon_url=i.user.avatar)
                 embed.set_thumbnail(url=f"https://mineskin.eu/helm/{minecraftname}/100.png")
                 await i.response.send_message(embed = embed)
 
@@ -92,9 +90,9 @@ class PlayerbaseCMD(commands.Cog):
     async def playerbaseDelete(self, i: discord.Interaction, discorduser: discord.User):
     
         dcid = discorduser.id
-        authorid = i.user.id
+        cmduser = i.user.id
 
-        if (dcid == authorid) or (authorid in OPERATORS):
+        if (dcid == cmduser) or (cmduser in config["permissions"]["operators"]):
             try:
                 minecraftname = getPlayername(pb.getPlayerUUID(dcid))
             except NoEntryError:
@@ -106,16 +104,17 @@ class PlayerbaseCMD(commands.Cog):
                 await i.response.send_message(embed = embed)
 
             pb.removePlayer(dcid=dcid)
-            try: repo.upload(file=PLAYERBASE_LOCAL, directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
+
+            try: repo.upload(file=config["database"]["local-path"], directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
             except Exception as e: raise apps.GithubError(str(e))
             
             embed = discord.Embed(title="",
-                                    description=f"<@{dcid}>s Verbindung mit <:mc:1291359572614844480> **{minecraftname}** wurde aufgehoben\n-# UUID: `{getUUID(minecraftname)}`",
-                                    color=3908961)
+                                  description=f"<@{dcid}>s Verbindung mit <:mc:1291359572614844480> **{minecraftname}** wurde aufgehoben\n-# UUID: `{getUUID(minecraftname)}`",
+                                  color=3908961)
             embed.set_author(name="Der Eintrag eines Discord-Nutzers wurde entfernt",
-                                icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
+                             icon_url="https://cdn.discordapp.com/emojis/1291772994250866720.webp")
             embed.set_footer(text=f"/playerbase remove @{discorduser.name}",
-                                icon_url=i.user.avatar)
+                             icon_url=i.user.avatar)
             await i.response.send_message(embed = embed)
 
         else:
@@ -126,7 +125,8 @@ class PlayerbaseCMD(commands.Cog):
     # ╭────────────────────────────────────────────────────────────╮
     # │                            GET                             │ 
     # ╰────────────────────────────────────────────────────────────╯
-    @playerbase.command(name="get", description="Gibt einen Eintrag zurück")
+
+    @playerbase.command(name="get", description="Sieh nach, mit welchem Minecraft-Account ein Nutzer verbunden ist")
     async def playerbaseGet(self, i: discord.Interaction, discorduser: discord.User):
         
         dcid = discorduser.id
@@ -142,10 +142,10 @@ class PlayerbaseCMD(commands.Cog):
 
         except NoEntryError:
             embed = discord.Embed(title="",
-                                description=f"<@{dcid}> ist aktuell mit keinem Minecraft-Account verbunden",
-                                color=15284296)
+                                  description=f"<@{dcid}> ist aktuell mit keinem Minecraft-Account verbunden",
+                                  color=15284296)
             embed.set_author(name="Kein Eintrag gefunden",
-                                icon_url="https://cdn.discordapp.com/emojis/1291775670975729716.webp")
+                             icon_url="https://cdn.discordapp.com/emojis/1291775670975729716.webp")
 
         await i.response.send_message(embed = embed)
             
@@ -159,7 +159,6 @@ class PlayerbaseCMD(commands.Cog):
         await i.response.defer()
 
         playerbase = pb.list()
-
 
         # Dieser wilde Code hier sortiert die User nach ihren Discordnamen, die ja aber in der Datenbank
         # eigentlich garnicht vorliegen

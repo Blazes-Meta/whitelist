@@ -1,0 +1,10 @@
+database:
+  local-path: tmp/playerbase.db
+  github-path: data/playerbase.db
+
+permissions:
+  operators:
+    - 720992368110862407
+
+github:
+  repository: Blazes-Meta/whitelist

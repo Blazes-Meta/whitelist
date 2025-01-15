@@ -1,6 +1,6 @@
 from discord import app_commands
 
-# Diese Exception-Klassen sind dafür, dass ich Errors in App Commands richtug handlen kann 
+# Diese Exception-Klassen sind dafür, dass ich Errors in App Commands richtig handlen kann 
 
 class AppPermissionError(app_commands.AppCommandError):
     """Fehler, wenn ein Benutzer keine Berechtigungen hat."""
