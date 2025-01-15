@@ -6,7 +6,6 @@ from lib.dbinterface import *
 from lib.github import Repository
 from dotenv import load_dotenv
 from yaml import load
-import os
 
 # ╭────────────────────────────────╮
 # │              ENV               │ 
