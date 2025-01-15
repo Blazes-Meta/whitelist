@@ -1,13 +1,26 @@
-PLAYERBASE_LOCAL = "tmp/playerbase.db"
-
 import discord
 from discord import app_commands
 from discord.ext import commands
 from lib.mojang import *
 from lib.dbinterface import *
 from lib.github import Repository
+from dotenv import load_dotenv
+from yaml import load
+import os
 
-pb = Playerbase(dbpath="tmp/playerbase.db")
+# ╭────────────────────────────────╮
+# │              ENV               │ 
+# ╰────────────────────────────────╯
+
+with open("config.yaml", "r") as config:
+    config = load(config)
+
+LOCAL_PATH = config["database"]["local-path"]
+pb = Playerbase(dbpath=LOCAL_PATH)
+
+# ╭────────────────────────────────╮
+# │              Cog               │ 
+# ╰────────────────────────────────╯
 
 async def setup(bot):
     await bot.add_cog(PlayerbaseCTXM(bot))

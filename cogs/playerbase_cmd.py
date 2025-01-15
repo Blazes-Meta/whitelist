@@ -16,10 +16,15 @@ import os
 with open("config.yaml", "r") as config:
     config = load(config)
 
+OPERATORS = config["permissions"]["operators"]
+LOCAL_PATH = config["database"]["local-path"]
+REPOSITORY = config["github"]["repository"]
+GITHUB_PATH = config["database"]["github-path"]
+
 load_dotenv()
 
-repo = Repository(repository=config["github"]["repository"], token=os.getenv("GITHUB_TOKEN"))
-pb = Playerbase(dbpath=config["database"]["local-path"])
+repo = Repository(repository=REPOSITORY, token=os.getenv("GITHUB_TOKEN"))
+pb = Playerbase(dbpath=LOCAL_PATH)
 
 # ╭────────────────────────────────╮
 # │              Cog               │ 
@@ -50,9 +55,9 @@ class PlayerbaseCMD(commands.Cog):
     async def playerbaseSet(self, i: discord.Interaction, discorduser: discord.User, minecraft: str):
 
         dcid = discorduser.id
-        cmduser = i.user.id
+        interactorid = i.user.id
 
-        if dcid == cmduser or cmduser in config["permissions"]["operators"]:
+        if dcid == interactorid or interactorid in OPERATORS:
             try:
                 if len(minecraft) > 16:
                     uuid = minecraft.replace("-", "")
@@ -63,7 +68,7 @@ class PlayerbaseCMD(commands.Cog):
 
                 pb.setPlayer(dcid=dcid, uuid=uuid)
 
-                try: repo.upload(file=pb.dbpath, directory=config["database"]["github-path"], msg="Playerbase-Upload", overwrite=True)
+                try: repo.upload(file=LOCAL_PATH, directory=GITHUB_PATH, msg="Playerbase-Upload", overwrite=True)
                 except Exception as e: raise apps.GithubError(str(e))
 
                 embed = discord.Embed(title="",
@@ -92,7 +97,7 @@ class PlayerbaseCMD(commands.Cog):
         dcid = discorduser.id
         cmduser = i.user.id
 
-        if (dcid == cmduser) or (cmduser in config["permissions"]["operators"]):
+        if dcid == cmduser or cmduser in OPERATORS:
             try:
                 minecraftname = getPlayername(pb.getPlayerUUID(dcid))
             except NoEntryError:
@@ -105,7 +110,7 @@ class PlayerbaseCMD(commands.Cog):
 
             pb.removePlayer(dcid=dcid)
 
-            try: repo.upload(file=config["database"]["local-path"], directory="data/playerbase.db", msg="Playerbase-Upload", overwrite=True)
+            try: repo.upload(file=LOCAL_PATH, directory=GITHUB_PATH, msg="Playerbase-Upload", overwrite=True)
             except Exception as e: raise apps.GithubError(str(e))
             
             embed = discord.Embed(title="",
