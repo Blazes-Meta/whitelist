@@ -51,7 +51,7 @@ class ActivityRole(commands.Cog):
 
         for user_id in guild.members:
             member = guild.get_member(user_id)
-            if role not in member.roles:
+            if user_id in user_ids and role not in member.roles:
                 try:
                     await member.add_roles(role)
                     print(f"Rolle '{role.name}' zu {member.name} hinzugefügt.")
@@ -60,7 +60,7 @@ class ActivityRole(commands.Cog):
                 except discord.HTTPException as e:
                     print(f"Fehler beim Hinzufügen der Rolle: {e}")
 
-            else:
+            elif user_id not in user_ids and role in member.roles:
                 try:
                     await member.remove_roles(role)
                     print(f"Rolle '{role.name}' von {member.name} entfernt.")
