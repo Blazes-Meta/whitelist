@@ -51,7 +51,7 @@ class ActivityRole(commands.Cog):
 
         for user_id in guild.members:
             member = guild.get_member(user_id)
-            if member and role not in member.roles:
+            if role not in member.roles:
                 try:
                     await member.add_roles(role)
                     print(f"Rolle '{role.name}' zu {member.name} hinzugefügt.")

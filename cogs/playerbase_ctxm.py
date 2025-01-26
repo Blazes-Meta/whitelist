@@ -5,14 +5,14 @@ from lib.mojang import *
 from lib.dbinterface import *
 from lib.github import Repository
 from dotenv import load_dotenv
-from yaml import load
+from yaml import load, SafeLoader
 
 # ╭────────────────────────────────╮
 # │              ENV               │ 
 # ╰────────────────────────────────╯
 
 with open("config.yaml", "r") as config:
-    config = load(config)
+    config = load(config, Loader=SafeLoader)
 
 LOCAL_PATH = config["database"]["local-path"]
 pb = Playerbase(dbpath=LOCAL_PATH)
