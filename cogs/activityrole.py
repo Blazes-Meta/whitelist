@@ -1,7 +1,7 @@
 import discord
 from discord import app_commands
 from discord.ext import commands, tasks
-from mcstatus import MinecraftServer
+from mcstatus import JavaServer
 from lib.dbinterface import *
 
 guild_id = 890190896530849792
@@ -24,7 +24,7 @@ class ActivityRole(commands.Cog):
         server_port = 25565
 
         try:
-            server = MinecraftServer.lookup(f"{server_address}:{server_port}")
+            server = JavaServer.lookup(f"{server_address}:{server_port}")
             query = server.query()
             players = query.players.names
 
