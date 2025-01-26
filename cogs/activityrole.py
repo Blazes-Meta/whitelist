@@ -17,11 +17,18 @@ async def setup(bot):
 class ActivityRole(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        print(f"[COGS] {__name__} is ready")
     
-    @tasks.loop(minutes=1)
-    async def assign_role_loop(self):
+    #@tasks.loop(minutes=1)
+    @commands.command()
+    async def assign_role(self, ctx = commands.Context):
+        print("Etwas ist passiert")
         server_address = "LvLSmpS2.aternos.me"
-        server_port = 25565
+        server_port = 12933
+
 
         try:
             server = JavaServer.lookup(f"{server_address}:{server_port}")
@@ -70,10 +77,10 @@ class ActivityRole(commands.Cog):
                     print(f"Fehler beim Entfernen der Rolle: {e}")
 
 
-    @assign_role_loop.before_loop
-    async def before_assign_role_loop(self):
-        print("Warte, bis der Bot bereit ist...")
-        await self.bot.wait_until_ready()
+    # @assign_role_loop.before_loop
+    # async def before_assign_role_loop(self):
+    #     print("Warte, bis der Bot bereit ist...")
+    #     await self.bot.wait_until_ready()
 
     def cog_unload(self):
         self.assign_role_loop.cancel()
