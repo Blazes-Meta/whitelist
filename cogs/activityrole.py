@@ -9,7 +9,7 @@ role_id = 1329087875215527977
 
 PLAYERBASE_LOCAL = "tmp/playerbase.db"
 pb = Playerbase(dbpath=PLAYERBASE_LOCAL)
-playerbase = pb.list()
+playerbase = pb.listEntries()
 
 async def setup(bot):
     await bot.add_cog(ActivityRole(bot))
@@ -17,22 +17,28 @@ async def setup(bot):
 class ActivityRole(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-
-    server_address = "LvLSmpS2.aternos.me"
-    server_port = 25565
-
-    try:
-        server = MinecraftServer.lookup(f"{server_address}:{server_port}")
-        query = server.query()
-        players = query.players.names
-
-        if players:
-            for :
-                ...
     
     @tasks.loop(minutes=1)
     async def assign_role_loop(self):
+        server_address = "LvLSmpS2.aternos.me"
+        server_port = 25565
+
+        try:
+            server = MinecraftServer.lookup(f"{server_address}:{server_port}")
+            query = server.query()
+            players = query.players.names
+
+            user_ids = []
+
+            if players:
+                for player in players:
+                    for key, value in playerbase.items():
+                        if value == player:
+                            user_ids.append(key)
+
+        except Exception as e:
+            print(e)
+
         guild: discord.Guild = self.bot.get_guild(self.guild_id)
         if not guild:
             print("Guild nicht gefunden.")
