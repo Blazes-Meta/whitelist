@@ -24,7 +24,7 @@ class ActivityRole(commands.Cog):
     
     #@tasks.loop(minutes=1)
     @commands.command()
-    async def assign_role(self, ctx = commands.Context):
+    async def assign_role(self, ctx: commands.Context):
         print("Etwas ist passiert")
         server_address = "LvLSmpS2.aternos.me"
         server_port = 12933
@@ -32,7 +32,7 @@ class ActivityRole(commands.Cog):
 
         try:
             server = JavaServer.lookup(f"{server_address}:{server_port}")
-            query = server.query()
+            query = await server.query()
             players = query.players.names
 
             user_ids = []
@@ -44,6 +44,7 @@ class ActivityRole(commands.Cog):
                             user_ids.append(key)
 
         except Exception as e:
+            print("JavaServer Fehler")
             print(e)
 
         guild: discord.Guild = self.bot.get_guild(self.guild_id)

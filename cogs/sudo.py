@@ -26,7 +26,7 @@ class Bot_Sudo(commands.Cog):
 
     @commands.command()
     async def sudo(self, ctx: commands.Context, arg1=None, arg2=None):
-        print(f"[SUDO] {ctx.author.name} ({ctx.author.id}) executed \"{ctx.message.content}\" in {ctx.guild.name} ({ctx.guild.id})")
+        print(f"[SUDO] {ctx.author.name} ({ctx.author.id}) issued \"{ctx.message.content}\" in {ctx.guild.name} ({ctx.guild.id})")
         
         #-------------------------------------------------#
         #                      Sync                       #
