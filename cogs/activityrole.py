@@ -60,6 +60,16 @@ class ActivityRole(commands.Cog):
                 except discord.HTTPException as e:
                     print(f"Fehler beim Hinzufügen der Rolle: {e}")
 
+            else:
+                try:
+                    await member.remove_roles(role)
+                    print(f"Rolle '{role.name}' von {member.name} entfernt.")
+                except discord.Forbidden:
+                    print(f"Keine Berechtigung, um von {member.name} die Rolle zu entfernen.")
+                except discord.HTTPException as e:
+                    print(f"Fehler beim Entfernen der Rolle: {e}")
+
+
     @assign_role_loop.before_loop
     async def before_assign_role_loop(self):
         print("Warte, bis der Bot bereit ist...")

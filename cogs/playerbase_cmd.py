@@ -6,7 +6,7 @@ from lib.mojang import *
 from lib.dbinterface import *
 from lib.github import Repository
 from dotenv import load_dotenv
-from yaml import load
+from yaml import load, SafeLoader
 import os
 
 # ╭────────────────────────────────╮
@@ -14,7 +14,7 @@ import os
 # ╰────────────────────────────────╯
 
 with open("config.yaml", "r") as config:
-    config = load(config)
+    config = load(config, Loader=SafeLoader)
 
 OPERATORS = config["permissions"]["operators"]
 LOCAL_PATH = config["database"]["local-path"]
