@@ -163,7 +163,7 @@ class PlayerbaseCMD(commands.Cog):
     async def playerbase_get(self, i: discord.Interaction):
         await i.response.defer()
 
-        playerbase = pb.list()
+        playerbase = pb.listEntries()
 
         # Dieser wilde Code hier sortiert die User nach ihren Discordnamen, die ja aber in der Datenbank
         # eigentlich garnicht vorliegen
