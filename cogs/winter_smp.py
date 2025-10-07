@@ -11,26 +11,32 @@ class WinterSMP(commands.Cog):
         self.bot: discord.Client = bot
 
     @commands.Cog.listener()
-    async def on_reaction_add(self, reaction: discord.Reaction, user: discord.User):
-        if user.bot:
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
+        print("Notice")
+        guild = self.bot.get_guild(payload.guild_id)
+        member = guild.get_member(payload.user_id)
+        message = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
+
+
+        if member.bot:
             return
         
-        if reaction.message.channel.id != TARGET_CHANNEL:
+        if payload.channel_id != TARGET_CHANNEL:
             return 
         
-        if reaction.message.id == TARGET_MESSAGE:
-            if str(reaction.emoji) == "🔥":
-                await self.bot.get_channel(DEBUG_CHANNEL).send(f"{user.mention} hat mit 🔥 reagiert!")
-            await reaction.remove(user)
-        elif reaction.message.id == FAKE_MESSAGE:   
+        if message.id == TARGET_MESSAGE:
+            if str(payload.emoji) == "🔥":
+                await self.bot.get_channel(DEBUG_CHANNEL).send(f"{member.mention} hat mit 🔥 reagiert!")
+            await message.remove_reaction(payload.emoji, member)
+        elif message.id == FAKE_MESSAGE:   
             try:
-                await user.send(f"Wir vermuten, dass du das Briefing nicht gelesen hast. Bitte lies es nochmal. Falls du es tatsächlich schon gelesen hast, ignoriere diese Nachricht.")
+                await member.send(f"Wir vermuten, dass du das Briefing nicht gelesen hast. Bitte lies es nochmal. Falls du es tatsächlich schon gelesen hast, ignoriere diese Nachricht.")
             except discord.Forbidden:
-                await self.bot.get_channel(DEBUG_CHANNEL).send(f"{user.mention} konnte ich leider keine DM schicken.")
-            if reaction.emoji.id != 1137799137497206854:
-                await reaction.remove(user)
+                await self.bot.get_channel(DEBUG_CHANNEL).send(f"{member.mention} konnte ich leider keine DM schicken.")
+            if payload.emoji.id != 1137799137497206854:
+                await message.remove_reaction(payload.emoji, member)
         else:
-            await reaction.remove(user)
+            await message.remove_reaction(payload.emoji, member)
 
 async def setup(bot):
     await bot.add_cog(WinterSMP(bot))
